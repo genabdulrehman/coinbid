@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1054439025439",
+    "project_id": "coinbid-10556",
+    "storage_bucket": "coinbid-10556.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054439025439:android:1652827cabd9ae11ec9e2a",
+        "android_client_info": {
+          "package_name": "com.coinbid.coinbid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054439025439-ffk0p5gfc2ef2blge1rc1f8dh8qufrs1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coinbid.coinbid",
+            "certificate_hash": "720ae76f5f79cffd5b14d364491acdfdc523493f"
+          }
+        },
+        {
+          "client_id": "1054439025439-nbh0hdr3ilg4kijnc9kktqp6s9iusj85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1g6LBjszANx1rz7t78D0dgSBO_nki-aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054439025439-nbh0hdr3ilg4kijnc9kktqp6s9iusj85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1054439025439-g67j4gjdrgchjfn9kh342givg510p5tn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.coinbid.coinbid"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
