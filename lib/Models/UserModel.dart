@@ -2,36 +2,42 @@
 import 'package:flutter/cupertino.dart';
 
 class UserModel {
-  static const iD = "uid";
-  static const dbName = "Name";
-  static const dbEmail = "Email";
-  static const dbVerified = "Verified";
-  static const dbPass = "Password";
-  static const dbPhoneNo = "Phone No";
-  static const dbProfile = "Profile";
+  UserModel({
+    this.id,
+    this.name,
+    this.email,
+    this.verified,
+    this.password,
+    this.phoneNo,
+    this.v,
+  });
 
-  String? profile,uid,name,email,password,phoneNo;
-  bool? verified;
+  String? id;
+  String? name;
+  String? email;
+  String? phoneNo;
+  int? verified;
+  String? password;
+  int? v;
 
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+    id: json["_id"],
+    name: json["name"],
+    email: json["email"],
+    verified: json["verified"],
+    phoneNo: json["mobile"] ??"",
+    password: json["password"],
+    v: json["__v"],
+  );
 
-  UserModel({this.profile,this.uid,this.name,this.email,this.password,this.phoneNo,this.verified});
-
-  UserModel.fromMap(Map<String, dynamic> data){
-    uid = data[iD];
-    name = data[dbName];
-    email = data[dbEmail];
-    password = data[dbPass];
-    phoneNo = data[dbPhoneNo];
-    verified = data[dbVerified];
-    profile = data[dbProfile];
-  }
-
-// UserModel.fromSnapshot(DocumentSnapshot snapshot) {
-//   name = snapshot.data()[NAME];
-//   email = snapshot.data()[EMAIL];
-//   uid = snapshot.data()[ID];
-//   userProfile = snapshot.data()[UserPROFILE];
-//
-
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "name": name,
+    "email": email,
+    "verified": verified,
+    "password": password,
+    "__v": v,
+  };
 }
+
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:coinbid/Controllers/bank_controller.dart';
 import 'package:coinbid/Controllers/price_planController.dart';
 import 'package:coinbid/Controllers/transaction_controller.dart';
 import 'package:coinbid/Controllers/user_controller.dart';
@@ -32,6 +33,7 @@ void main() async {
     Get.put(PricePlanController());
     Get.put(TransactionController());
     Get.put(UserController());
+    Get.put(BankController());
   });
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
