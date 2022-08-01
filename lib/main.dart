@@ -11,9 +11,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+var isLogin;
+Future<String?> readDataFromHive() async {
+  var box = await Hive.openBox("UserData");
+  String? data = box.get("user-access-token");
+  isLogin = data;
+  print("User access token : $data");
+
+  return data;
+}
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  readDataFromHive();
   Firebase.initializeApp().then((value) {
     Get.put(PricePlanController());
     Get.put(TransactionController());
@@ -41,6 +55,7 @@ class MyApp extends StatelessWidget {
       900: shadeColor(color, 0.4),
     });
   }
+
   int tintValue(int value, double factor) =>
       max(0, min((value + ((255 - value) * factor)).round(), 255));
 
@@ -66,13 +81,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Coinbid App',
       theme: ThemeData(
-          primarySwatch: generateMaterialColor(kPrimaryColor),
+        primarySwatch: generateMaterialColor(kPrimaryColor),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           elevation: 0,
-          centerTitle: true
-        )
+          centerTitle: true,
+        ),
       ),
       home: const SplashScreen(),
     );

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinbid/api/http.dart';
 import 'package:coinbid/screens/signup/otp_verification_code.dart';
 import 'package:coinbid/widgets/error_dialogue.dart';
+import 'package:hive/hive.dart';
 import 'package:twilio_phone_verify/twilio_phone_verify.dart';
 
 import '../Models/UserModel.dart';
@@ -13,9 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-
-class UserController extends GetxController{
+class UserController extends GetxController {
   static UserController instance = Get.find();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   late Rx<User?> firebaseUser;
@@ -23,9 +22,7 @@ class UserController extends GetxController{
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   CollectionReference studentReference =
-  FirebaseFirestore.instance.collection('Users');
-
-
+      FirebaseFirestore.instance.collection('Users');
 
   @override
   void onReady() {
@@ -40,38 +37,36 @@ class UserController extends GetxController{
     currentUser = user;
     if (currentUser != null) {
       userData.bindStream(listenToUser());
-
     }
   }
 
-  Stream<UserModel> listenToUser() =>
-      studentReference.doc(firebaseUser.value?.uid)
-          .snapshots()
-          .map((snapshot) => UserModel.fromMap(snapshot.data() as Map<String, dynamic>));
+  Stream<UserModel> listenToUser() => studentReference
+      .doc(firebaseUser.value?.uid)
+      .snapshots()
+      .map((snapshot) =>
+          UserModel.fromMap(snapshot.data() as Map<String, dynamic>));
 
-
-
-  Future<void> signUp(UserModel userModel,context,) async {
-
-    postJson(
-        ApiUrl().signupUrl,
-        {
-          "name":userModel.name,
-          "email":userModel.email,
-          "password":userModel.password,
-          "verified":true
-        }
-    ).then((value) {
-      if(value['success'] == true){
-            Navigator.pop(context);
-            Get.offAll( () => const PasswordResetLinkSuccessfully(title: "User Signup successfully",));
-      }
-      else{
+  Future<void> signUp(
+    UserModel userModel,
+    context,
+  ) async {
+    postJson(ApiUrl().signupUrl, {
+      "name": userModel.name,
+      "email": userModel.email,
+      "password": userModel.password,
+      "verified": true
+    }).then((value) {
+      if (value['success'] == true) {
         Navigator.pop(context);
-          errorDialogue(
-              context: context,
-              title: "Something went wrong",
-              bodyText: value['message']);
+        Get.offAll(() => const PasswordResetLinkSuccessfully(
+              title: "User Signup successfully",
+            ));
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value['message']);
       }
     });
     // await firebaseAuth
@@ -106,31 +101,17 @@ class UserController extends GetxController{
     // });
   }
 
-Future<void> sendOtp(UserModel userModel,context) async{
-  loadingDialogue(context: context);
-  await ApiConfig().twilioPhoneVerify.sendSmsCode(userModel.phoneNo ??'').then((value) {
-    if (value.successful == true)  {
-      Navigator.pop(context);
-      Get.to(OtpVerificationCode(userModel: userModel,));
-    } else {
-      Navigator.pop(context);
-      errorDialogue(
-          context: context,
-          title: "Something went wrong",
-          bodyText: value.errorMessage.toString());
-    }
-  });
-}
-  Future<void> resendOtp(String phoneNo,context) async{
+  Future<void> sendOtp(UserModel userModel, context) async {
     loadingDialogue(context: context);
-    await ApiConfig().twilioPhoneVerify.sendSmsCode(phoneNo).then((value) {
-      if (value.successful == true)  {
+    await ApiConfig()
+        .twilioPhoneVerify
+        .sendSmsCode(userModel.phoneNo ?? '')
+        .then((value) {
+      if (value.successful == true) {
         Navigator.pop(context);
-        errorDialogue(
-                    context: context,
-                    imageUrl: 'images/correct.png',
-                    title: "Successfully",
-                    bodyText: "OTP Code Re-Send Successfully");
+        Get.to(OtpVerificationCode(
+          userModel: userModel,
+        ));
       } else {
         Navigator.pop(context);
         errorDialogue(
@@ -141,12 +122,33 @@ Future<void> sendOtp(UserModel userModel,context) async{
     });
   }
 
-Future<TwilioResponse>  verifyOtp(String phoneNo, String otpCode) async{
-  var twilioResponse = await ApiConfig().twilioPhoneVerify.verifySmsCode(
-      phone: phoneNo,
-      code: otpCode);
-  return twilioResponse;
-}
+  Future<void> resendOtp(String phoneNo, context) async {
+    loadingDialogue(context: context);
+    await ApiConfig().twilioPhoneVerify.sendSmsCode(phoneNo).then((value) {
+      if (value.successful == true) {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            imageUrl: 'images/correct.png',
+            title: "Successfully",
+            bodyText: "OTP Code Re-Send Successfully");
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value.errorMessage.toString());
+      }
+    });
+  }
+
+  Future<TwilioResponse> verifyOtp(String phoneNo, String otpCode) async {
+    var twilioResponse = await ApiConfig()
+        .twilioPhoneVerify
+        .verifySmsCode(phone: phoneNo, code: otpCode);
+    return twilioResponse;
+  }
+
   // Future<void> verifyPhoneNumber(String phoneNumber , context, UserModel userModel) async {
   //   loadingDialogue(context: context);
   //   await firebaseAuth.verifyPhoneNumber(
@@ -200,25 +202,33 @@ Future<TwilioResponse>  verifyOtp(String phoneNo, String otpCode) async{
   //
   //       );
   // }
+  Future<void> enterDataToHive({String? keyName, String? value}) async {
+    var box = await Hive.openBox("UserData");
+    box.put("$keyName", value);
+  }
 
+  Future<String?> readDataFromHive() async {
+    var box = await Hive.openBox("UserData");
+    String? data = box.get("user-access-token");
 
-  Future<void> logIn(
-      String email, password, context) async {
+    return data;
+  }
+
+  Future<void> removeDataFromHive() async {
+    var box = await Hive.openBox("Signin");
+    box.deleteAll(box.keys);
+  }
+
+  Future<void> logIn(String email, password, context) async {
     loadingDialogue(context: context);
-    postJson(
-        ApiUrl().loginUrl,
-        {
-          "email":email,
-          "password":password
-        }
-    ).then((value) {
-      if(value['success'] == true){
-
-        print(value['token']);
+    postJson(ApiUrl().loginUrl, {"email": email, "password": password})
+        .then((value) {
+      if (value['success'] == true) {
+        enterDataToHive(keyName: "user-access-token", value: value['token']);
+        print("The token is -> ${value['token']}");
         Navigator.pop(context);
         Get.offAll(const HomePage());
-      }
-      else{
+      } else {
         Navigator.pop(context);
         errorDialogue(
             context: context,
@@ -265,7 +275,9 @@ Future<TwilioResponse>  verifyOtp(String phoneNo, String otpCode) async{
     loadingDialogue(context: context);
     await firebaseAuth.sendPasswordResetEmail(email: email).then((value) {
       Navigator.pop(context);
-      Get.offAll( const PasswordResetLinkSuccessfully(title: "Link Send Successfully",));
+      Get.offAll(const PasswordResetLinkSuccessfully(
+        title: "Link Send Successfully",
+      ));
     }).catchError((error) {
       Navigator.pop(context);
       errorDialogue(
@@ -275,28 +287,25 @@ Future<TwilioResponse>  verifyOtp(String phoneNo, String otpCode) async{
     });
   }
 
-  void  signOut ()async{
+  void signOut() async {
     await firebaseAuth.signOut();
-   // Get.offAll(const WelcomeScreen());
+
+    // Get.offAll(const WelcomeScreen());
   }
 
-  Future<void> updateUserData(Map<String, dynamic> data,context) async{
-    await studentReference.doc(currentUser?.uid).update(
-        data
-    ).then((value) {
+  Future<void> updateUserData(Map<String, dynamic> data, context) async {
+    await studentReference.doc(currentUser?.uid).update(data).then((value) {
       Get.snackbar(
         "Successfully",
         "Details of student updated successfully",
         backgroundColor: const Color(0x85ffffff),
       );
-    }
-    ).catchError((e){
+    }).catchError((e) {
       Navigator.pop(context);
       errorDialogue(
           title: "Something went wrong",
           bodyText: e.message.toString(),
-          context: context
-      );
+          context: context);
     });
   }
 }
