@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 
 class UserModel {
@@ -21,23 +20,21 @@ class UserModel {
   int? v;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id: json["_id"],
-    name: json["name"],
-    email: json["email"],
-    verified: json["verified"],
-    phoneNo: json["mobile"] ??"",
-    password: json["password"],
-    v: json["__v"],
-  );
+        id: json["_id"],
+        name: json["name"],
+        email: json["email"],
+        verified: json["verified"],
+        phoneNo: json["mobile"] ?? "",
+        password: json["password"],
+        v: json["__v"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "email": email,
-    "verified": verified,
-    "password": password,
-    "__v": v,
-  };
+        "_id": id,
+        "name": name,
+        "email": email,
+        "verified": verified,
+        "password": password,
+        "__v": v,
+      };
 }
-
-

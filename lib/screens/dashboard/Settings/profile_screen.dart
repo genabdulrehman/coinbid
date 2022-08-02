@@ -2,8 +2,11 @@ import 'package:coinbid/constant/constant.dart';
 import 'package:coinbid/widgets/customButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
+import '../../../provider/user_provider.dart';
 import '../../../widgets/custom_textfield.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -26,7 +29,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      final dataProvider =
+          Provider.of<UserDataProvider>(context, listen: false);
+      dataProvider.getData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final dataProvider =
+        Provider.of<UserDataProvider>(context).getUserModel?.users;
+
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -119,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }
                             return null;
                           },
-                          hintText: "Name"),
+                          hintText: "${dataProvider?.name}"),
                       SizedBox(
                         height: h * 0.020,
                       ),

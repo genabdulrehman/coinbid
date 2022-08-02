@@ -24,7 +24,7 @@ class UserController extends GetxController {
   CollectionReference studentReference =
       FirebaseFirestore.instance.collection('Users');
   CollectionReference twilioReference =
-  FirebaseFirestore.instance.collection('Twilio');
+      FirebaseFirestore.instance.collection('Twilio');
 
   @override
   void onReady() {
@@ -49,11 +49,10 @@ class UserController extends GetxController {
       .map((snapshot) =>
           UserModel.fromJson(snapshot.data() as Map<String, dynamic>));
 
-
   String accountSid = '';
-  String authToken ='';
-  String serviceSid ='';
-  Future<void>  getTwilioAccess() async{
+  String authToken = '';
+  String serviceSid = '';
+  Future<void> getTwilioAccess() async {
     twilioReference.doc('PDwgeYazeqR8wx4vVARf').get().then((value) {
       accountSid = value['accountSid'];
       authToken = value['authToken'];
@@ -240,6 +239,8 @@ class UserController extends GetxController {
         .then((value) {
       if (value['success'] == true) {
         enterDataToHive(keyName: "user-access-token", value: value['token']);
+        getUserData(header: value['token']);
+
         print("The token is -> ${value['token']}");
         Navigator.pop(context);
         Get.offAll(const HomePage());
@@ -322,5 +323,30 @@ class UserController extends GetxController {
           bodyText: e.message.toString(),
           context: context);
     });
+  }
+
+  // Get user data
+
+  Future<dynamic> getUserData({String? header}) async {
+    UserModel userModel;
+    getJson(ApiUrl().getUser, headers: {"user_access_token": header.toString()})
+        .then(
+      (value) => {
+        if (value["success"] == true)
+          {
+            print(value),
+            enterDataToHive(
+                keyName: "user-name", value: value["users"]['name']),
+            enterDataToHive(
+                keyName: "user-email", value: value["users"]['email']),
+            enterDataToHive(keyName: "user-id", value: value["users"]['_id']),
+
+            // UserModel.fromJson(value);
+
+            // findTraderModel = FindTraderModel.fromJson(dataDecoded);
+          },
+        print("User Data : ${value["users"]['name']}")
+      },
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:coinbid/Constant/constant.dart';
+import 'package:coinbid/Controllers/user_controller.dart';
 import 'package:coinbid/screens/dashboard/home/home_screen.dart';
 import 'package:coinbid/widgets/custom_button_icon.dart';
 import 'package:email_validator/email_validator.dart';
@@ -130,6 +131,8 @@ class _LoginPageState extends State<LoginPage> {
               if (_formKey.currentState!.validate()) {
                 userController.logIn(_emailTextEditController.text,
                     _passwordTextEditController.text, context);
+
+                // UserController.instance.getUser();
               }
             },
           ),

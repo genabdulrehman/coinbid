@@ -4,9 +4,12 @@ import 'package:coinbid/screens/dashboard/Settings/profile_verification.dart';
 import 'package:coinbid/screens/dashboard/Settings/widgets/setting_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Controllers/page_controller.dart';
 import '../../../constant/colors.dart';
+import '../../../provider/user_provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -16,16 +19,41 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  String? userEmail;
+  String? userName;
+  Future<String?> readDataFromHive() async {
+    var box = await Hive.openBox("UserData");
+    String? data = box.get("user-email");
+    String? data2 = box.get("user-name");
+    userEmail = data.toString();
+    userName = data2.toString();
+
+    return data;
+  }
+
+  @override
+  void initState() {
+    readDataFromHive();
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      final dataProvider =
+          Provider.of<UserDataProvider>(context, listen: false);
+      dataProvider.getData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final h =MediaQuery.of(context).size.height;
+    final dataProvider =
+        Provider.of<UserDataProvider>(context).getUserModel?.users;
+    final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar:AppBar(
-        title: Text("Settings",style: GoogleFonts.nunito(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black
-        ),),
+      appBar: AppBar(
+        title: Text(
+          "Settings",
+          style: GoogleFonts.nunito(
+              fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -33,7 +61,7 @@ class _SettingScreenState extends State<SettingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: h *.02),
+              SizedBox(height: h * .02),
               Row(
                 children: [
                   const CircleAvatar(
@@ -43,24 +71,38 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: ClipOval(
                       child: Image(
                         image: AssetImage('images/profile1.png'),
-                      ),),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 13,),
+                  const SizedBox(
+                    width: 13,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Vijay Prakash',style: GoogleFonts.nunito(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black
-                      ),),
-                      const SizedBox(height: 5,),
-                      Text('Vijay@gmail.com',
+                      Text(
+                        "${dataProvider?.name.toString()}",
                         style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: kTextColor
-                        ),),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: 160,
+                        child: FittedBox(
+                          child: Text(
+                            '${dataProvider?.email}',
+                            // overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.nunito(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: kTextColor),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -70,8 +112,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(color: kOrangeColor),
-                        color: const Color(0xffFFF7F1)
-                    ),
+                        color: const Color(0xffFFF7F1)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -79,79 +120,104 @@ class _SettingScreenState extends State<SettingScreen> {
                           image: AssetImage('images/platinum.png'),
                           width: 15,
                         ),
-                        const SizedBox(width: 5,),
-                        Text("Platinum",style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xff3A3836)
-                        ),),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Platinum",
+                          style: GoogleFonts.nunito(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xff3A3836)),
+                        ),
                       ],
                     ),
                   ),
-
                 ],
               ),
-              SizedBox(height: h *.05),
-              Text('ACCOUNT',
+              SizedBox(height: h * .05),
+              Text(
+                'ACCOUNT',
                 style: GoogleFonts.nunito(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: kTextColor
-                ),),
-              SizedBox(height: h *.02),
+                    color: kTextColor),
+              ),
+              SizedBox(height: h * .02),
               SettingTile(
-                  function: (){
-                    Navigator.of(context).push(PageCreateRoute().createRoute(const ProfileScreen()));
+                  function: () {
+                    Navigator.of(context).push(
+                        PageCreateRoute().createRoute(const ProfileScreen()));
                   },
                   title: 'User Profile',
                   url: 'setting_icons/person.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){
-                    Navigator.of(context).push(PageCreateRoute().createRoute(const BankDetailScreen()));
+                  function: () {
+                    Navigator.of(context).push(PageCreateRoute()
+                        .createRoute(const BankDetailScreen()));
                   },
                   title: 'Bank Details',
                   url: 'setting_icons/bank.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){
-                    Navigator.of(context).push(PageCreateRoute().createRoute(const ProfileVerification()));
+                  function: () {
+                    Navigator.of(context).push(PageCreateRoute()
+                        .createRoute(const ProfileVerification()));
                   },
                   title: 'Profile Verification',
                   url: 'setting_icons/verify.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){},
+                  function: () {},
                   title: 'Cancellation & Refund',
                   url: 'setting_icons/refund.png'),
-              SizedBox(height: h *.02),
-              Text('COMPANY',
+              SizedBox(height: h * .02),
+              Text(
+                'COMPANY',
                 style: GoogleFonts.nunito(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: kTextColor
-                ),),
-              SizedBox(height: h *.02),
+                    color: kTextColor),
+              ),
+              SizedBox(height: h * .02),
               SettingTile(
-                  function: (){},
+                  function: () {},
                   title: 'About us',
                   url: 'setting_icons/about.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){},
+                  function: () {},
                   title: 'Privacy Policy',
                   url: 'setting_icons/privacy.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){},
+                  function: () {},
                   title: 'Terms & Conditions',
                   url: 'setting_icons/term.png'),
-              const Divider(color: kBorderColor,thickness: 1,),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
-                  function: (){},
+                  function: () {},
                   title: 'Refer a friend',
                   url: 'setting_icons/refer.png'),
-
             ],
           ),
         ),
