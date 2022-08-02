@@ -11,7 +11,7 @@ const Map<String, String> defaultHeaders = {
   'Content-type': 'application/json',
 };
 
-Future<dynamic> postJson(String url, Object body,
+Future<dynamic> postJson(String url, Object body,context,
     {Map<String, String>? headers}) {
   return http
       .post(Uri.parse(url),
@@ -33,6 +33,7 @@ Future<dynamic> postJson(String url, Object body,
                 'Error occurred while communication with server with status_code: ${response.statusCode} and url $url');
         }
       }, onError: (error) {
+        Navigator.pop(context);
         if (error is SocketException) {
           String errorMessage = "No internet or api offline";
           debugPrint("--> error: $errorMessage");

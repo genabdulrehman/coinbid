@@ -105,7 +105,7 @@ class MyApp extends StatelessWidget {
               centerTitle: true,
             ),
           ),
-          home: isLogin ? HomePage() : SplashScreen()),
+          home: const SplashScreen()),
     );
   }
 }

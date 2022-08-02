@@ -6,7 +6,7 @@ class GetUserModel {
 
   GetUserModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    users = json['users'] != null ? new Users.fromJson(json['users']) : null;
+    users = json['users'] != null ?  Users.fromJson(json['users']) : null;
   }
 
   Map<String, dynamic> toJson() {

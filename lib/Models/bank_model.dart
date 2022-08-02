@@ -9,7 +9,7 @@ class BankModel {
     if (json['banks'] != null) {
       banks = <Banks>[];
       json['banks'].forEach((v) {
-        banks!.add(new Banks.fromJson(v));
+        banks!.add( Banks.fromJson(v));
       });
     }
   }

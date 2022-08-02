@@ -69,7 +69,7 @@ class UserController extends GetxController {
       "email": userModel.email,
       "password": userModel.password,
       "verified": true
-    }).then((value) {
+    },context).then((value) {
       if (value['success'] == true) {
         Navigator.pop(context);
         Get.offAll(() => const PasswordResetLinkSuccessfully(
@@ -235,7 +235,7 @@ class UserController extends GetxController {
 
   Future<void> logIn(String email, password, context) async {
     loadingDialogue(context: context);
-    postJson(ApiUrl().loginUrl, {"email": email, "password": password})
+    postJson(ApiUrl().loginUrl, {"email": email, "password": password},context)
         .then((value) {
       if (value['success'] == true) {
         enterDataToHive(keyName: "user-access-token", value: value['token']);

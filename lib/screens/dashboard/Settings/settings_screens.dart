@@ -3,6 +3,7 @@ import 'package:coinbid/screens/dashboard/Settings/profile_screen.dart';
 import 'package:coinbid/screens/dashboard/Settings/profile_verification.dart';
 import 'package:coinbid/screens/dashboard/Settings/widgets/setting_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
