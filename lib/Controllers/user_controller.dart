@@ -23,11 +23,14 @@ class UserController extends GetxController {
 
   CollectionReference studentReference =
       FirebaseFirestore.instance.collection('Users');
+  CollectionReference twilioReference =
+  FirebaseFirestore.instance.collection('Twilio');
 
   @override
   void onReady() {
     super.onReady();
     firebaseUser = Rx<User?>(currentUser);
+    getTwilioAccess();
     firebaseUser.bindStream(firebaseAuth.userChanges());
     ever(firebaseUser, _setInitialScreen);
   }
@@ -44,7 +47,19 @@ class UserController extends GetxController {
       .doc(firebaseUser.value?.uid)
       .snapshots()
       .map((snapshot) =>
-          UserModel.fromMap(snapshot.data() as Map<String, dynamic>));
+          UserModel.fromJson(snapshot.data() as Map<String, dynamic>));
+
+
+  String accountSid = '';
+  String authToken ='';
+  String serviceSid ='';
+  Future<void>  getTwilioAccess() async{
+    twilioReference.doc('PDwgeYazeqR8wx4vVARf').get().then((value) {
+      accountSid = value['accountSid'];
+      authToken = value['authToken'];
+      serviceSid = value['serviceSid'];
+    });
+  }
 
   Future<void> signUp(
     UserModel userModel,
