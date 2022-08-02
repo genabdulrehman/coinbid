@@ -77,19 +77,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      defaultTransition: Transition.rightToLeft,
-      debugShowCheckedModeBanner: false,
-      title: 'Coinbid App',
-      theme: ThemeData(
-        primarySwatch: generateMaterialColor(kPrimaryColor),
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
+        defaultTransition: Transition.rightToLeft,
+        debugShowCheckedModeBanner: false,
+        title: 'Coinbid App',
+        theme: ThemeData(
+          primarySwatch: generateMaterialColor(kPrimaryColor),
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true,
+          ),
         ),
-      ),
-      home: const SplashScreen(),
-    );
+        home: const SplashScreen());
   }
 }
