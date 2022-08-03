@@ -15,10 +15,10 @@ class BankDetailProvider with ChangeNotifier {
   getBankDetails(context) async {
     loading = true;
     notifyListeners();
-     await bankDetailsController.getBankDetails().then((value) {
-       loading = false;
-       notifyListeners();
-      if(value?.banks?.first.bankName != null){
+    await bankDetailsController.getBankDetails().then((value) {
+      loading = false;
+      notifyListeners();
+      if (value?.banks?.length == 1) {
         data = true;
         bankModel = value;
         notifyListeners();

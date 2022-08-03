@@ -86,119 +86,117 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                 fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
           ),
         ),
-        body: isLoading == false ?Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-              child:
-            Column(
-              children: [
-                SizedBox(height: h * .02),
-                data == true
-                    ? Stack(
+        body: isLoading == false
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(top: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: const Color(0xffFF7455),
-                      ),
-                      child: const Image(
-                        image: AssetImage('images/ornament.png'),
-                        width: double.infinity,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15.0, vertical: 20),
-                      child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Bank name - ${bankProvider?.banks?.first.bankName ??''}"
-                                .toUpperCase(),
-                            style: GoogleFonts.nunito(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white),
-                          ),
-                          SizedBox(height: h * .02),
-                          BankDetailsWidget(
-                              type: 'A/c number -',
-                              data:
-                              "${bankProvider?.banks?.first.accountNumber.toString() ??''}"),
-                          BankDetailsWidget(
-                              type: 'IFSC code -',
-                              data:
-                              "${bankProvider?.banks?.first.ifscCode}"),
-                          // BankDetailsWidget(
-                          //    type: 'branch -', data: data.banks?.first. ??''),
-                          BankDetailsWidget(
-                            type: 'UPI ID -',
-                            data:
-                            "${bankProvider?.banks?.first.upiId.toString()}",
-                          ),
-                          SizedBox(height: h * .02),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: GestureDetector(
-                              onTap: () {
-                                bottomSheet(h);
-                              },
-                              child: Container(
-                                width: 121,
-                                height: 28,
+                    SizedBox(height: h * .02),
+                    data == true
+                        ? Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.only(top: 20),
                                 decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(30),
-                                    color: Colors.white),
-                                child: Center(
-                                  child: Text(
-                                    "Edit Bank Account",
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                      const Color(0xffFF7455),
-                                    ),
-                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: const Color(0xffFF7455),
+                                ),
+                                child: const Image(
+                                  image: AssetImage('images/ornament.png'),
+                                  width: double.infinity,
+                                  fit: BoxFit.fill,
                                 ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Bank name - ${bankProvider?.banks?.first.bankName ?? ''}"
+                                          .toUpperCase(),
+                                      style: GoogleFonts.nunito(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(height: h * .02),
+                                    BankDetailsWidget(
+                                        type: 'A/c number -',
+                                        data:
+                                            "${bankProvider?.banks?.first.accountNumber.toString() ?? ''}"),
+                                    BankDetailsWidget(
+                                        type: 'IFSC code -',
+                                        data:
+                                            "${bankProvider?.banks?.first.ifscCode}"),
+                                    // BankDetailsWidget(
+                                    //    type: 'branch -', data: data.banks?.first. ??''),
+                                    BankDetailsWidget(
+                                      type: 'UPI ID -',
+                                      data:
+                                          "${bankProvider?.banks?.first.upiId.toString()}",
+                                    ),
+                                    SizedBox(height: h * .02),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          bottomSheet(h);
+                                        },
+                                        child: Container(
+                                          width: 121,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              color: Colors.white),
+                                          child: Center(
+                                            child: Text(
+                                              "Edit Bank Account",
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700,
+                                                color: const Color(0xffFF7455),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
+                        : Center(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: h / 2.5),
+                                  child: const Text(
+                                      "You have no banks details, please enter."),
+                                ),
+                                // Spacer(),
+                                SizedBox(
+                                  height: h * .2,
+                                ),
+                                FloatingActionButton(
+                                  onPressed: () {
+                                    bottomSheet(h);
+                                  },
+                                  child: const Icon(Icons.add),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    )
                   ],
-                )
-                    : Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: h / 2.5),
-                        child: const Text(
-                            "You have no banks details, please enter."),
-                      ),
-                      // Spacer(),
-                      SizedBox(
-                        height: h * .2,
-                      ),
-                      FloatingActionButton(
-                        onPressed: () {
-                          bottomSheet(h);
-                        },
-                        child: const Icon(Icons.add),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-        ):const Center(
-          child: CircularProgressIndicator(),
-        )
+                ))
+            : const Center(
+                child: CircularProgressIndicator(),
+              )
 
         // future: bankController.getBankDetails(token),
 
@@ -325,30 +323,30 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                   CustomButton(
                       title: 'Submit',
                       clickFuction: () async {
-                        if(_formKey.currentState!.validate())
-                          {
-
-                            await BankController.instance.postBankDetails(
-                              context: context,
-                              bankName: _nameTextEditController.text,
-                              ifsc: _ifscCodeTextEditController.text,
-                              upi_id: _upiIdEditController.text,
-                              accountNumber: _accountNoTextEditController.text,
-                            ).then((value) {
-                              if(value['success']){
-                                Get.back();
-                                Get.snackbar('Successfully', value['message']);
-                                final dataProvider =
-                                Provider.of<BankDetailProvider>(context, listen: false);
-                                dataProvider.getBankDetails(context);
-                              }
-                              else{
-                                Get.back();
-                                Get.snackbar('Something Went Wrong', value['message']);
-                              }
-
-                            });
-                          }
+                        if (_formKey.currentState!.validate()) {
+                          await BankController.instance
+                              .postBankDetails(
+                            context: context,
+                            bankName: _nameTextEditController.text,
+                            ifsc: _ifscCodeTextEditController.text,
+                            upi_id: _upiIdEditController.text,
+                            accountNumber: _accountNoTextEditController.text,
+                          )
+                              .then((value) {
+                            if (value['success']) {
+                              Get.back();
+                              Get.snackbar('Successfully', value['message']);
+                              final dataProvider =
+                                  Provider.of<BankDetailProvider>(context,
+                                      listen: false);
+                              dataProvider.getBankDetails(context);
+                            } else {
+                              Get.back();
+                              Get.snackbar(
+                                  'Something Went Wrong', value['message']);
+                            }
+                          });
+                        }
                       }),
                   SizedBox(
                     height: h * 0.020,
