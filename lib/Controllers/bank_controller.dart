@@ -46,4 +46,26 @@ class BankController extends GetxController {
       'user_access_token': token.toString()
     });
   }
+
+  Future<dynamic> editBankDetails(
+      {context,
+        String? bankName,
+        String? accountNumber,
+        String? ifsc,
+        String? upi_id}) async {
+    await fetchToken();
+print(token.toString());
+    Map<String, dynamic> body = {
+      "bank_name": bankName,
+      "account_number": accountNumber,
+      "ifsc_code": ifsc,
+      "upi_id": upi_id
+    };
+
+    return await putJson(ApiUrl().updateBankDetailUrl, body,context,
+        headers: {
+          'Content-Type': 'application/json',
+          'user_access_token': token.toString()
+        });
+  }
 }
