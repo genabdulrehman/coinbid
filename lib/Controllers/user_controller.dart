@@ -292,18 +292,14 @@ class UserController extends GetxController {
   }
 
   Future<void> resetPassword(String email, context) async {
+    Map<String, dynamic> body = {"email": email};
     loadingDialogue(context: context);
-    await firebaseAuth.sendPasswordResetEmail(email: email).then((value) {
-      Navigator.pop(context);
-      Get.offAll(const PasswordResetLinkSuccessfully(
-        title: "Link Send Successfully",
-      ));
-    }).catchError((error) {
-      Navigator.pop(context);
-      errorDialogue(
-          context: context,
-          title: "Something went wrong",
-          bodyText: error.message.toString());
+    putJson(ApiUrl().forgetPassword, body, context).then((value) {
+      if (value["success"]) {
+        Get.offAll(const PasswordResetLinkSuccessfully(
+          title: "Password Sent Successfully on Your Email",
+        ));
+      }
     });
   }
 
