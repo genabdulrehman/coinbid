@@ -126,8 +126,10 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                                     SizedBox(height: h * .02),
                                     BankDetailsWidget(
                                         type: 'A/c number -',
-                                        data:
-                                            bankProvider?.banks?.first.accountNumber.toString() ?? ''),
+                                        data: bankProvider
+                                                ?.banks?.first.accountNumber
+                                                .toString() ??
+                                            ''),
                                     BankDetailsWidget(
                                         type: 'IFSC code -',
                                         data:
@@ -144,7 +146,7 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                                       alignment: Alignment.bottomRight,
                                       child: GestureDetector(
                                         onTap: () {
-                                          bottomSheet(h:h,edit: true);
+                                          bottomSheet(h: h, edit: true);
                                         },
                                         child: Container(
                                           width: 121,
@@ -185,7 +187,7 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                                 ),
                                 FloatingActionButton(
                                   onPressed: () {
-                                    bottomSheet(h:h,edit: false);
+                                    bottomSheet(h: h, edit: false);
                                   },
                                   child: const Icon(Icons.add),
                                 ),
@@ -203,7 +205,7 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
         );
   }
 
-  Future<dynamic> bottomSheet({required double h , bool? edit}) {
+  Future<dynamic> bottomSheet({required double h, bool? edit}) {
     return Get.bottomSheet(
         FractionallySizedBox(
           heightFactor: 0.75,
@@ -324,7 +326,8 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                       title: 'Submit',
                       clickFuction: () async {
                         if (_formKey.currentState!.validate()) {
-                          if(edit == true){
+                          if (edit == true) {
+                            loadingDialogue(context: context);
                             await BankController.instance
                                 .editBankDetails(
                               context: context,
@@ -334,12 +337,13 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                               accountNumber: _accountNoTextEditController.text,
                             )
                                 .then((value) {
+                              Get.back();
                               if (value['success']) {
                                 Get.back();
                                 Get.snackbar('Successfully', 'updated');
                                 final dataProvider =
-                                Provider.of<BankDetailProvider>(context,
-                                    listen: false);
+                                    Provider.of<BankDetailProvider>(context,
+                                        listen: false);
                                 dataProvider.getBankDetails(context);
                               } else {
                                 Get.back();
@@ -347,8 +351,8 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                                     'Something Went Wrong', value['message']);
                               }
                             });
-                          }
-                          else{
+                          } else {
+                            loadingDialogue(context: context);
                             await BankController.instance
                                 .postBankDetails(
                               context: context,
@@ -358,12 +362,13 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
                               accountNumber: _accountNoTextEditController.text,
                             )
                                 .then((value) {
+                              Get.back();
                               if (value['success']) {
                                 Get.back();
                                 Get.snackbar('Successfully', value['message']);
                                 final dataProvider =
-                                Provider.of<BankDetailProvider>(context,
-                                    listen: false);
+                                    Provider.of<BankDetailProvider>(context,
+                                        listen: false);
                                 dataProvider.getBankDetails(context);
                               } else {
                                 Get.back();
