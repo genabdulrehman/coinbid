@@ -15,5 +15,5 @@ class ApiUrl {
   String loginUrl = '$mainUrl/users/signin';
   String bankDetailUrl = '$mainUrl/users/bank';
   String getUser = '$mainUrl/users/me';
-  String updateBankDetailUrl = '$mainUrl/users/bank/62ea4ad354c95c30f12583ae';
+  String updateBankDetailUrl = '$mainUrl/users/bank';
 }
