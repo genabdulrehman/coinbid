@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinbid/api/http.dart';
 import 'package:coinbid/screens/signup/otp_verification_code.dart';
@@ -236,7 +238,7 @@ class UserController extends GetxController {
     var box = await Hive.openBox("Signin");
     box.deleteAll(box.keys);
   }
-
+String token ='';
   Future<void> logIn(String email, password, context) async {
     loadingDialogue(context: context);
     postJson(ApiUrl().loginUrl, {"email": email, "password": password}, context)
@@ -244,7 +246,7 @@ class UserController extends GetxController {
       if (value['success'] == true) {
         enterDataToHive(keyName: "user-access-token", value: value['token']);
         getUserData(header: value['token']);
-
+        token = value['token'];
         print("The token is -> ${value['token']}");
         Navigator.pop(context);
         Get.offAll(const HomePage());
@@ -309,19 +311,40 @@ class UserController extends GetxController {
     // Get.offAll(const WelcomeScreen());
   }
 
-  Future<void> updateUserData(Map<String, dynamic> data, context) async {
-    await studentReference.doc(currentUser?.uid).update(data).then((value) {
-      Get.snackbar(
-        "Successfully",
-        "Details of student updated successfully",
-        backgroundColor: const Color(0x85ffffff),
-      );
-    }).catchError((e) {
-      Navigator.pop(context);
-      errorDialogue(
-          title: "Something went wrong",
-          bodyText: e.message.toString(),
-          context: context);
+  Future<void> updateUserData(String name,date,city,mobile,state,oldImage,path, context) async {
+    loadingDialogue(context: context);
+    putWithImageJson(ApiUrl().updateUserUrl,
+        {
+          'name': name,
+          'birth_date': date,
+          'city': city,
+          'mobile': mobile,
+          'state': state,
+          'old_image': oldImage
+        },
+        context,
+        {
+          'Content-Type': 'application/json',
+          'user_access_token': token
+        },
+        path)
+        .then((value) {
+          print(token);
+          print(value);
+      // if (value['success'] == true) {
+      //   Navigator.pop(context);
+      //   errorDialogue(
+      //       context: context,
+      //       title: "Success",
+      //       bodyText: value['message']);
+      //
+      // } else {
+      //   Navigator.pop(context);
+      //   errorDialogue(
+      //       context: context,
+      //       title: "Something went wrong",
+      //       bodyText: value['message']);
+      // }
     });
   }
 

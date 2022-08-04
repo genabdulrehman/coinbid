@@ -17,4 +17,5 @@ class ApiUrl {
   String getUser = '$mainUrl/users/me';
   String updateBankDetailUrl = '$mainUrl/users/bank';
   String forgetPassword = '$mainUrl/users/forget/password';
+  String updateUserUrl = '$mainUrl/users/update';
 }

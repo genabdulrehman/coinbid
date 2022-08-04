@@ -1,8 +1,11 @@
+
+
 import 'package:coinbid/constant/constant.dart';
 import 'package:coinbid/widgets/customButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
@@ -27,6 +30,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? birthDateInString;
 
   final _formKey = GlobalKey<FormState>();
+  XFile? image;
+  Future pickImage() async {
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = XFile(file!.path);
+    });
+  }
+
 
   @override
   void initState() {
@@ -104,7 +115,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 10,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  pickImage();
+                },
                 child: Container(
                   width: 86,
                   height: 29,
@@ -226,14 +239,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Submit',
                   clickFuction: () {
                     if (_formKey.currentState!.validate()) {
-                      // Map<String, dynamic> data = {
-                      //   "name":_nameTextEditController,
-                      //   "email":,
-                      //   "city":,
-                      //   "mobile":,
-                      //   "state":,
-                      // };
-                      // userController.updateUserData(data, context);
+                      userController.updateUserData(_nameTextEditController.text,
+                          birthDateInString,
+                          _cityTextEditController.text,
+                          _phoneTextEditController.text,
+                          _stateTextEditController.text,
+                          '', image!.path, context);
                     }
                   }),
               SizedBox(height: h * .02),
