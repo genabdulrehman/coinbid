@@ -1,10 +1,10 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinbid/api/http.dart';
+import 'package:coinbid/provider/user_provider.dart';
 import 'package:coinbid/screens/signup/otp_verification_code.dart';
 import 'package:coinbid/widgets/error_dialogue.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:twilio_phone_verify/twilio_phone_verify.dart';
 
 import '../Models/UserModel.dart';
@@ -230,6 +230,7 @@ class UserController extends GetxController {
   Future<String?> readDataFromHive() async {
     var box = await Hive.openBox("UserData");
     String? data = box.get("user-access-token");
+    token = data.toString();
 
     return data;
   }
@@ -238,7 +239,8 @@ class UserController extends GetxController {
     var box = await Hive.openBox("Signin");
     box.deleteAll(box.keys);
   }
-String token ='';
+
+  String token = '';
   Future<void> logIn(String email, password, context) async {
     loadingDialogue(context: context);
     postJson(ApiUrl().loginUrl, {"email": email, "password": password}, context)
@@ -311,40 +313,45 @@ String token ='';
     // Get.offAll(const WelcomeScreen());
   }
 
-  Future<void> updateUserData(String name,date,city,mobile,state,oldImage,path, context) async {
+  Future<void> updateUserData(
+      {String? name, date, city, mobile, state, profile, context}) async {
     loadingDialogue(context: context);
-    putWithImageJson(ApiUrl().updateUserUrl,
+
+    await readDataFromHive();
+    putJson(
+        ApiUrl().updateUserUrl,
         {
-          'name': name,
+          'name': name.toString(),
           'birth_date': date,
           'city': city,
           'mobile': mobile,
           'state': state,
-          'old_image': oldImage
+          'profile': profile
         },
         context,
-        {
+        headers: {
           'Content-Type': 'application/json',
-          'user_access_token': token
-        },
-        path)
-        .then((value) {
-          print(token);
-          print(value);
-      // if (value['success'] == true) {
-      //   Navigator.pop(context);
-      //   errorDialogue(
-      //       context: context,
-      //       title: "Success",
-      //       bodyText: value['message']);
-      //
-      // } else {
-      //   Navigator.pop(context);
-      //   errorDialogue(
-      //       context: context,
-      //       title: "Something went wrong",
-      //       bodyText: value['message']);
-      // }
+          'user_access_token': token.toString()
+        }).then((value) {
+      print(token);
+      print(value);
+      Get.back();
+      if (value['success'] == true) {
+        Future.delayed(Duration.zero, () {
+          final dataProvider =
+              Provider.of<UserDataProvider>(context, listen: false);
+          dataProvider.getData();
+        });
+        Navigator.pop(context);
+        errorDialogue(
+            context: context, title: "Success", bodyText: value['message']);
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value['message']);
+      }
     });
   }
 

@@ -10,8 +10,12 @@ class UserDataProvider with ChangeNotifier {
 
   getData() async {
     loading = true;
-    getUserModel = (await getUserController.getUserData());
-    loading = false;
-    notifyListeners();
+    await getUserController.getUserData().then((value) {
+      loading = false;
+      if (value?.success == true) {
+        getUserModel = value;
+        notifyListeners();
+      }
+    });
   }
 }

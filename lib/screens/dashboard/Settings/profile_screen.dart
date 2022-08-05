@@ -1,8 +1,11 @@
-
+import 'dart:io';
 
 import 'package:coinbid/constant/constant.dart';
+
 import 'package:coinbid/widgets/customButton.dart';
+import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,12 +23,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _nameTextEditController = TextEditingController();
-  final TextEditingController _phoneTextEditController =
-      TextEditingController();
-  final TextEditingController _cityTextEditController = TextEditingController();
-  final TextEditingController _stateTextEditController =
-      TextEditingController();
+  TextEditingController _nameTextEditController = TextEditingController();
+  TextEditingController _phoneTextEditController = TextEditingController();
+  TextEditingController _cityTextEditController = TextEditingController();
+  TextEditingController _stateTextEditController = TextEditingController();
   DateTime? birthDate;
   String? birthDateInString;
 
@@ -35,9 +36,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final file = await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       image = XFile(file!.path);
+      print("Image path is $image");
     });
   }
 
+  File? imageFile;
+
+  /// Get from gallery
+  _getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+        print("Image path is $imageFile");
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -54,6 +72,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
+    final name = Provider.of<UserDataProvider>(context).getUserModel?.users;
+    _nameTextEditController = TextEditingController(text: dataProvider?.name);
+    _phoneTextEditController =
+        TextEditingController(text: dataProvider?.mobile);
+    _cityTextEditController = TextEditingController(text: dataProvider?.city);
+    _stateTextEditController = TextEditingController(text: dataProvider?.state);
 
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -91,15 +115,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               SizedBox(height: h * .02),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 30,
                 // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
                 backgroundColor: kLightBackgroundColor,
-                child: ClipOval(
-                  child: Image(
-                    image: AssetImage('images/profile1.png'),
-                  ),
-                ),
+                child: imageFile != null
+                    ? ClipOval(
+                        child: Image.file(
+                          imageFile!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      )
+                    : ClipOval(
+                        child: Image(
+                          image: AssetImage('images/profile1.png'),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
               ),
               const SizedBox(
                 height: 10,
@@ -116,7 +152,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  pickImage();
+                  // pickImage();
+                  _getFromGallery();
                 },
                 child: Container(
                   width: 86,
@@ -237,14 +274,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: h * .04),
               CustomButton(
                   title: 'Submit',
-                  clickFuction: () {
+                  clickFuction: () async {
                     if (_formKey.currentState!.validate()) {
-                      userController.updateUserData(_nameTextEditController.text,
-                          birthDateInString,
-                          _cityTextEditController.text,
-                          _phoneTextEditController.text,
-                          _stateTextEditController.text,
-                          '', image!.path, context);
+                      // loadingDialogue(context: context);
+                      await userController.updateUserData(
+                          name: _nameTextEditController.text,
+                          date: birthDateInString,
+                          city: _cityTextEditController.text,
+                          mobile: _phoneTextEditController.text,
+                          state: _stateTextEditController.text,
+                          profile:
+                              "https://ted-conferences-speaker-photos-production.s3.amazonaws.com/yoa4pm3vyerco6hqbhjxly3bf41d",
+                          context: context);
+                      // Get.back();
                     }
                   }),
               SizedBox(height: h * .02),

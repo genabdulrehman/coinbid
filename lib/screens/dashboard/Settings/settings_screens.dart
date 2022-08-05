@@ -2,6 +2,10 @@ import 'package:coinbid/screens/dashboard/Settings/bank_detail_screen.dart';
 import 'package:coinbid/screens/dashboard/Settings/profile_screen.dart';
 import 'package:coinbid/screens/dashboard/Settings/profile_verification.dart';
 import 'package:coinbid/screens/dashboard/Settings/widgets/setting_tile.dart';
+import 'package:coinbid/screens/onBoarding/splash_screen.dart';
+import 'package:coinbid/screens/onBoarding/welcome_screen.dart';
+import 'package:coinbid/screens/signup/login_screen.dart';
+import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,10 +34,22 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Future<void> removeDataFromHive() async {
+    var box = await Hive.openBox("UserData");
+    box.deleteAll(box.keys);
+  }
+
   @override
   Widget build(BuildContext context) {
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
+    final userImage = Provider.of<UserDataProvider>(context)
+        .getUserModel
+        ?.users
+        ?.profile
+        .toString();
+    print("User image $userImage");
+
     final isLaoding = Provider.of<UserDataProvider>(context).loading;
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -55,14 +71,13 @@ class _SettingScreenState extends State<SettingScreen> {
                     SizedBox(height: h * .02),
                     Row(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 30,
                           // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
                           backgroundColor: kLightBackgroundColor,
                           child: ClipOval(
-                            child: Image(
-                              image: AssetImage('images/profile1.png'),
-                            ),
+                            child: Image.network(
+                                "https://ted-conferences-speaker-photos-production.s3.amazonaws.com/yoa4pm3vyerco6hqbhjxly3bf41d"),
                           ),
                         ),
                         const SizedBox(
@@ -169,6 +184,19 @@ class _SettingScreenState extends State<SettingScreen> {
                     SettingTile(
                         function: () {},
                         title: 'Cancellation & Refund',
+                        url: 'setting_icons/refund.png'),
+                    SizedBox(height: h * .02),
+                    SettingTile(
+                        function: () async {
+                          loadingDialogue(context: context);
+                          await Future.delayed(
+                              const Duration(seconds: 1), () {});
+
+                          await removeDataFromHive();
+                          Get.back();
+                          Get.to(WelcomeScreen());
+                        },
+                        title: 'Sign Out',
                         url: 'setting_icons/refund.png'),
                     SizedBox(height: h * .02),
                     Text(

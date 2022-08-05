@@ -6,7 +6,7 @@ class GetUserModel {
 
   GetUserModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    users = json['users'] != null ?  Users.fromJson(json['users']) : null;
+    users = json['users'] != null ? new Users.fromJson(json['users']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,8 +25,23 @@ class Users {
   String? email;
   int? verified;
   int? iV;
+  String? birth;
+  String? city;
+  String? mobile;
+  String? profile;
+  String? state;
 
-  Users({this.sId, this.name, this.email, this.verified, this.iV});
+  Users(
+      {this.sId,
+      this.name,
+      this.email,
+      this.verified,
+      this.iV,
+      this.birth,
+      this.city,
+      this.mobile,
+      this.profile,
+      this.state});
 
   Users.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -34,6 +49,11 @@ class Users {
     email = json['email'];
     verified = json['verified'];
     iV = json['__v'];
+    birth = json['birth'];
+    city = json['city'];
+    mobile = json['mobile'];
+    profile = json['profile'];
+    state = json['state'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +63,11 @@ class Users {
     data['email'] = this.email;
     data['verified'] = this.verified;
     data['__v'] = this.iV;
+    data['birth'] = this.birth;
+    data['city'] = this.city;
+    data['mobile'] = this.mobile;
+    data['profile'] = this.profile;
+    data['state'] = this.state;
     return data;
   }
 }

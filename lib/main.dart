@@ -26,7 +26,7 @@ Future<String?> readDataFromHive() async {
   String? data = await box.get("user-access-token");
   print("User token : $data");
   if (data == null) {
-    isLogin = true;
+    isLogin = false;
   }
   print("User access token : $isLogin");
 
@@ -36,7 +36,7 @@ Future<String?> readDataFromHive() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  readDataFromHive();
+  await readDataFromHive();
   Firebase.initializeApp().then((value) {
     Get.put(PricePlanController());
     Get.put(TransactionController());
@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
               centerTitle: true,
             ),
           ),
-          home: const SplashScreen()),
+          home: isLogin ? HomePage() : SplashScreen()),
     );
   }
 }
