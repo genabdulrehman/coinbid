@@ -24,13 +24,11 @@ class BankDetailScreen extends StatefulWidget {
 }
 
 class _BankDetailScreenState extends State<BankDetailScreen> {
-  final TextEditingController _accountNoTextEditController =
-      TextEditingController();
-  final TextEditingController _nameTextEditController = TextEditingController();
-  final TextEditingController _ifscCodeTextEditController =
-      TextEditingController();
+  TextEditingController _accountNoTextEditController = TextEditingController();
+  TextEditingController _nameTextEditController = TextEditingController();
+  TextEditingController _ifscCodeTextEditController = TextEditingController();
 
-  final TextEditingController _upiIdEditController = TextEditingController();
+  TextEditingController _upiIdEditController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   String token = '';
@@ -55,6 +53,14 @@ class _BankDetailScreenState extends State<BankDetailScreen> {
     final bankProvider = Provider.of<BankDetailProvider>(context).bankModel;
     final isLoading = Provider.of<BankDetailProvider>(context).loading;
     final data = Provider.of<BankDetailProvider>(context).data;
+    _nameTextEditController =
+        TextEditingController(text: bankProvider?.banks?.first.bankName);
+    _accountNoTextEditController =
+        TextEditingController(text: bankProvider?.banks?.first.accountNumber);
+    _ifscCodeTextEditController =
+        TextEditingController(text: bankProvider?.banks?.first.ifscCode);
+    _upiIdEditController =
+        TextEditingController(text: bankProvider?.banks?.first.upiId);
     print("Bank details is : $bankProvider");
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
