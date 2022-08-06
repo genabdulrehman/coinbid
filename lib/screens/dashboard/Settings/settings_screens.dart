@@ -27,11 +27,7 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      final dataProvider =
-          Provider.of<UserDataProvider>(context, listen: false);
-      dataProvider.getData();
-    });
+
   }
 
   Future<void> removeDataFromHive() async {
@@ -43,14 +39,8 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
-    final userImage = Provider.of<UserDataProvider>(context)
-        .getUserModel
-        ?.users
-        ?.profile
-        .toString();
-    print("User image $userImage");
-
-    final isLaoding = Provider.of<UserDataProvider>(context).loading;
+    final loader =
+        Provider.of<UserDataProvider>(context).loading;
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -68,17 +58,23 @@ class _SettingScreenState extends State<SettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: h * .01),
-              dataProvider?.name == null
-                  ? Center(child: CircularProgressIndicator())
+              loader == true
+                  ? const Center(child: CircularProgressIndicator())
                   : Row(
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
+                          backgroundImage: dataProvider?.profile != null ?NetworkImage(dataProvider?.profile??''):null,
                           backgroundColor: kLightBackgroundColor,
                           child: ClipOval(
-                            child: Image.network(
-                                "https://ted-conferences-speaker-photos-production.s3.amazonaws.com/yoa4pm3vyerco6hqbhjxly3bf41d"),
+                            child:dataProvider?.profile == null ? const ClipOval(
+                              child: Image(
+                                image: AssetImage('images/profile1.png'),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.fill,
+                              ),
+                            ):Container(),
                           ),
                         ),
                         const SizedBox(

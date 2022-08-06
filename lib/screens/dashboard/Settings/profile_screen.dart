@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:coinbid/Controllers/image_controller.dart';
 import 'package:coinbid/constant/constant.dart';
 
 import 'package:coinbid/widgets/customButton.dart';
@@ -58,22 +59,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final dataProvider =
           Provider.of<UserDataProvider>(context, listen: false);
       dataProvider.getData();
+
     });
+
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
-    final name = Provider.of<UserDataProvider>(context).getUserModel?.users;
+    final loader =
+        Provider.of<UserDataProvider>(context).loading;
+    birthDateInString = dataProvider?.birth;
     _nameTextEditController = TextEditingController(text: dataProvider?.name);
     _phoneTextEditController =
         TextEditingController(text: dataProvider?.mobile);
     _cityTextEditController = TextEditingController(text: dataProvider?.city);
     _stateTextEditController = TextEditingController(text: dataProvider?.state);
-
-    print(dataProvider?.birth);
-
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -104,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
         ),
       ),
-      body: SingleChildScrollView(
+      body: loader == false ? SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -112,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: h * .02),
               CircleAvatar(
                 radius: 30,
-                // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
+                 backgroundImage: dataProvider?.profile != null ?NetworkImage(dataProvider?.profile??''):null,
                 backgroundColor: kLightBackgroundColor,
                 child: imageFile != null
                     ? ClipOval(
@@ -120,17 +124,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           imageFile!,
                           width: 100,
                           height: 100,
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.fill,
                         ),
                       )
-                    : ClipOval(
+                    :  dataProvider?.profile == null ? const ClipOval(
                         child: Image(
                           image: AssetImage('images/profile1.png'),
                           width: 100,
                           height: 100,
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.fill,
                         ),
-                      ),
+                      ):Container(),
               ),
               const SizedBox(
                 height: 10,
@@ -181,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }
                             return null;
                           },
-                          hintText: "${dataProvider?.name}"),
+                          hintText: "Name"),
                       SizedBox(
                         height: h * 0.020,
                       ),
@@ -229,15 +233,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: h * 0.020,
                       ),
                       CustomTextField(
+                          textInputType: TextInputType.phone,
                           controller: _phoneTextEditController,
                           label: 'Mobile No',
                           validator: (value) {
-                            if (value.trim().isEmpty) {
-                              return 'Please enter your mobile no';
+                            String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+                            RegExp regExp = RegExp(pattern);
+                            if (value.length == 0) {
+                              return 'Please enter mobile number';
+                            }
+                            else if (!regExp.hasMatch(value)) {
+                              return 'Please enter valid mobile number';
                             }
                             return null;
                           },
-                          hintText: "Mobile No"),
+                          hintText: "+91.."),
                       SizedBox(
                         height: h * 0.020,
                       ),
@@ -270,30 +280,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CustomButton(
                   title: 'Submit',
                   clickFuction: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // loadingDialogue(context: context);
-                      if (imageFile == null) {
+                      if (imageFile == null && dataProvider?.profile == null) {
                         errorDialogue(
                             context: context,
                             title: "Image is required",
                             bodyText: "Please, select image from gallery");
                       }
-                      await userController.updateUserData(
-                          name: _nameTextEditController.text,
-                          date: birthDateInString,
-                          city: _cityTextEditController.text,
-                          mobile: _phoneTextEditController.text,
-                          state: _stateTextEditController.text,
-                          profile:
-                              "https://ted-conferences-speaker-photos-production.s3.amazonaws.com/yoa4pm3vyerco6hqbhjxly3bf41d",
-                          context: context);
-                      // Get.back();
-                    }
+                      else if(birthDateInString == null){
+                        errorDialogue(
+                            context: context,
+                            title: "Date of birth is required",
+                            bodyText: "Please, select your date of birth");
+                      }
+                      else if(imageFile == null && _formKey.currentState!.validate()){
+                        loadingDialogue(context: context);
+                        await userController.updateUserData(
+                            name: _nameTextEditController.text,
+                            date: birthDateInString,
+                            city: _cityTextEditController.text,
+                            mobile: _phoneTextEditController.text,
+                            state: _stateTextEditController.text,
+                            profile: dataProvider?.profile,
+                            context: context);
+                      }
+                      else if(_formKey.currentState!.validate()){
+                        loadingDialogue(context: context);
+                        userController.readDataFromHive().then((value) {
+                          print(value);
+                        });
+                        ImagePickerController().uploadImageToFirebase("User Profile", dataProvider?.email ??"", imageFile!).then((value) async{
+                          await userController.updateUserData(
+                              name: _nameTextEditController.text,
+                              date: birthDateInString,
+                              city: _cityTextEditController.text,
+                              mobile: _phoneTextEditController.text,
+                              state: _stateTextEditController.text,
+                              profile: value,
+                              context: context);
+                        }).catchError((error){
+                          Get.back();
+                          errorDialogue(
+                              context: context,
+                              title: "Something went wrong",
+                              bodyText: error.toString());
+                        });
+                      }
+
+
+
                   }),
               SizedBox(height: h * .02),
             ],
           ),
         ),
+      ):
+      const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

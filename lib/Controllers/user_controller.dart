@@ -315,14 +315,12 @@ class UserController extends GetxController {
 
   Future<void> updateUserData(
       {String? name, date, city, mobile, state, profile, context}) async {
-    loadingDialogue(context: context);
-
     await readDataFromHive();
     putJson(
         ApiUrl().updateUserUrl,
         {
           'name': name.toString(),
-          'birth': date,
+          'birth_date': date,
           'city': city,
           'mobile': mobile,
           'state': state,
@@ -333,20 +331,19 @@ class UserController extends GetxController {
           'Content-Type': 'application/json',
           'user_access_token': token.toString()
         }).then((value) {
-      print(token);
-      print(value);
-      Get.back();
       if (value['success'] == true) {
+        Get.back();
         Future.delayed(Duration.zero, () {
           final dataProvider =
               Provider.of<UserDataProvider>(context, listen: false);
           dataProvider.getData();
         });
         Navigator.pop(context);
-        errorDialogue(
-            context: context, title: "Success", bodyText: value['message']);
+        Get.snackbar(
+             "Success",
+            value['message']);
       } else {
-        Navigator.pop(context);
+        Get.back();
         errorDialogue(
             context: context,
             title: "Something went wrong",
