@@ -33,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-
   File? imageFile;
 
   /// Get from gallery
@@ -273,9 +272,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   clickFuction: () async {
                     if (_formKey.currentState!.validate()) {
                       // loadingDialogue(context: context);
-                      if(imageFile == null){
+                      if (imageFile == null) {
                         errorDialogue(
-                            context: context, title: "Image is required", bodyText: "Please, select image from gallery");
+                            context: context,
+                            title: "Image is required",
+                            bodyText: "Please, select image from gallery");
                       }
                       await userController.updateUserData(
                           name: _nameTextEditController.text,

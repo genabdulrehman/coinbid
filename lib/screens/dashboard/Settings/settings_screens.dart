@@ -61,16 +61,16 @@ class _SettingScreenState extends State<SettingScreen> {
               fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
         ),
       ),
-      body: isLaoding
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: h * .01),
-                    Row(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: h * .01),
+              dataProvider?.name == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Row(
                       children: [
                         CircleAvatar(
                           radius: 30,
@@ -85,7 +85,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           width: 8,
                         ),
                         SizedBox(
-                          width: w*.42,
+                          width: w * .42,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -140,106 +140,105 @@ class _SettingScreenState extends State<SettingScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: h * .05),
-                    Text(
-                      'ACCOUNT',
-                      style: GoogleFonts.nunito(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: kTextColor),
-                    ),
-                    SizedBox(height: h * .02),
-                    SettingTile(
-                        function: () {
-                          Navigator.of(context).push(PageCreateRoute()
-                              .createRoute(const ProfileScreen()));
-                        },
-                        title: 'User Profile',
-                        url: 'setting_icons/person.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {
-                          Navigator.of(context).push(PageCreateRoute()
-                              .createRoute(const BankDetailScreen()));
-                        },
-                        title: 'Bank Details',
-                        url: 'setting_icons/bank.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {
-                          Navigator.of(context).push(PageCreateRoute()
-                              .createRoute(const ProfileVerification()));
-                        },
-                        title: 'Profile Verification',
-                        url: 'setting_icons/verify.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {},
-                        title: 'Cancellation & Refund',
-                        url: 'setting_icons/refund.png'),
-                    SizedBox(height: h * .02),
-                    SettingTile(
-                        function: () async {
-                          loadingDialogue(context: context);
-                          await Future.delayed(
-                              const Duration(seconds: 1), () {});
-
-                          await removeDataFromHive();
-                          Get.back();
-                          Get.to(WelcomeScreen());
-                        },
-                        title: 'Sign Out',
-                        url: 'setting_icons/refund.png'),
-                    SizedBox(height: h * .02),
-                    Text(
-                      'COMPANY',
-                      style: GoogleFonts.nunito(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: kTextColor),
-                    ),
-                    SizedBox(height: h * .02),
-                    SettingTile(
-                        function: () {},
-                        title: 'About us',
-                        url: 'setting_icons/about.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {},
-                        title: 'Privacy Policy',
-                        url: 'setting_icons/privacy.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {},
-                        title: 'Terms & Conditions',
-                        url: 'setting_icons/term.png'),
-                    const Divider(
-                      color: kBorderColor,
-                      thickness: 1,
-                    ),
-                    SettingTile(
-                        function: () {},
-                        title: 'Refer a friend',
-                        url: 'setting_icons/refer.png'),
-                  ],
-                ),
+              SizedBox(height: h * .05),
+              Text(
+                'ACCOUNT',
+                style: GoogleFonts.nunito(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: kTextColor),
               ),
-            ),
+              SizedBox(height: h * .02),
+              SettingTile(
+                  function: () {
+                    Navigator.of(context).push(
+                        PageCreateRoute().createRoute(const ProfileScreen()));
+                  },
+                  title: 'User Profile',
+                  url: 'setting_icons/person.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {
+                    Navigator.of(context).push(PageCreateRoute()
+                        .createRoute(const BankDetailScreen()));
+                  },
+                  title: 'Bank Details',
+                  url: 'setting_icons/bank.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {
+                    Navigator.of(context).push(PageCreateRoute()
+                        .createRoute(const ProfileVerification()));
+                  },
+                  title: 'Profile Verification',
+                  url: 'setting_icons/verify.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {},
+                  title: 'Cancellation & Refund',
+                  url: 'setting_icons/refund.png'),
+              SizedBox(height: h * .02),
+              SettingTile(
+                  function: () async {
+                    loadingDialogue(context: context);
+                    await Future.delayed(const Duration(seconds: 1), () {});
+
+                    await removeDataFromHive();
+                    Get.back();
+                    Get.to(WelcomeScreen());
+                  },
+                  title: 'Sign Out',
+                  url: 'setting_icons/refund.png'),
+              SizedBox(height: h * .02),
+              Text(
+                'COMPANY',
+                style: GoogleFonts.nunito(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: kTextColor),
+              ),
+              SizedBox(height: h * .02),
+              SettingTile(
+                  function: () {},
+                  title: 'About us',
+                  url: 'setting_icons/about.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {},
+                  title: 'Privacy Policy',
+                  url: 'setting_icons/privacy.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {},
+                  title: 'Terms & Conditions',
+                  url: 'setting_icons/term.png'),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
+              SettingTile(
+                  function: () {},
+                  title: 'Refer a friend',
+                  url: 'setting_icons/refer.png'),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

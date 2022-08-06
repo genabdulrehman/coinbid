@@ -7,6 +7,7 @@ import 'package:coinbid/Controllers/transaction_controller.dart';
 import 'package:coinbid/Controllers/user_controller.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/provider/bankDetail_provider.dart';
+import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
 import 'package:coinbid/screens/dashboard/home_page.dart';
 import 'package:coinbid/screens/onBoarding/splash_screen.dart';
@@ -47,7 +48,6 @@ void main() async {
       runApp(const MyApp());
     });
   });
-
 }
 
 class MyApp extends StatelessWidget {
@@ -93,6 +93,8 @@ class MyApp extends StatelessWidget {
             create: (context) => UserDataProvider()),
         ChangeNotifierProvider<BankDetailProvider>(
             create: (context) => BankDetailProvider()),
+        ChangeNotifierProvider<SubscriptionProvider>(
+            create: (context) => SubscriptionProvider()),
       ],
       child: GetMaterialApp(
           defaultTransition: Transition.rightToLeft,

@@ -5,16 +5,24 @@ import '../../../../Models/price_plan_model.dart';
 import '../../../../constant/colors.dart';
 
 class InactivePlaneBox extends StatelessWidget {
-  final PricePlanModel pricePlan;
-  const InactivePlaneBox({required this.pricePlan , Key? key}) : super(key: key);
+  final String url;
+  final String title;
+  final String price;
+  const InactivePlaneBox({
+    Key? key,
+    required this.url,
+    required this.title,
+    required this.price,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
       child: Container(
           height: 82,
-          padding: const EdgeInsets.only(left: 10,right: 20 ,top: 5 , bottom: 5),
+          padding:
+              const EdgeInsets.only(left: 10, right: 20, top: 5, bottom: 5),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -36,30 +44,38 @@ class InactivePlaneBox extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: const Color(0xffFFF7F1),
-                    borderRadius: BorderRadius.circular(30)
-                ),
-                child:  Center(child:Image(
-                  image: AssetImage(pricePlan.url),
-                  width: 18,
-                ),
+                    borderRadius: BorderRadius.circular(30)),
+                child: Center(
+                  child: Image(
+                    image: AssetImage(url),
+                    width: 18,
+                  ),
                 ),
               ),
-              const SizedBox(width: 10,),
+              const SizedBox(
+                width: 10,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(pricePlan.packageName,style: GoogleFonts.nunito(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color:Colors.black
-                  ),),
-                  const SizedBox(height: 5,),
-                  Text("Rs.${pricePlan.price.round()}",style: GoogleFonts.nunito(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color:Colors.black
-                  ),),
+                  Text(
+                    title,
+                    style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Rs.${price}",
+                    style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black),
+                  ),
                 ],
               ),
               const Spacer(),
@@ -68,13 +84,10 @@ class InactivePlaneBox extends StatelessWidget {
                 height: 25,
                 decoration: BoxDecoration(
                     border: Border.all(color: kGreyTextColor),
-                    borderRadius: BorderRadius.circular(30)
-                ),
+                    borderRadius: BorderRadius.circular(30)),
               ),
-
             ],
-          )
-      ),
+          )),
     );
   }
 }
