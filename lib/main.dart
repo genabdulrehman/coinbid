@@ -38,15 +38,16 @@ void main() async {
   await Hive.initFlutter();
   await readDataFromHive();
   Firebase.initializeApp().then((value) {
-    Get.put(PricePlanController());
-    Get.put(TransactionController());
-    Get.put(UserController());
-    Get.put(BankController());
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) {
+      Get.put(PricePlanController());
+      Get.put(TransactionController());
+      Get.put(UserController());
+      Get.put(BankController());
+      runApp(const MyApp());
+    });
   });
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(const MyApp());
-  });
+
 }
 
 class MyApp extends StatelessWidget {

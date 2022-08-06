@@ -322,7 +322,7 @@ class UserController extends GetxController {
         ApiUrl().updateUserUrl,
         {
           'name': name.toString(),
-          'birth_date': date,
+          'birth': date,
           'city': city,
           'mobile': mobile,
           'state': state,

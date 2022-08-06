@@ -52,6 +52,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
     final isLaoding = Provider.of<UserDataProvider>(context).loading;
     final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -68,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: h * .02),
+                    SizedBox(height: h * .01),
                     Row(
                       children: [
                         CircleAvatar(
@@ -81,24 +82,24 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ),
                         const SizedBox(
-                          width: 13,
+                          width: 8,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${dataProvider?.name.toString()}",
-                              style: GoogleFonts.nunito(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: 160,
-                              child: Text(
+                        SizedBox(
+                          width: w*.42,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${dataProvider?.name.toString()}",
+                                style: GoogleFonts.nunito(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
                                 '${dataProvider?.email}',
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.nunito(
@@ -106,8 +107,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                     fontWeight: FontWeight.w400,
                                     color: kTextColor),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const Spacer(),
                         Container(

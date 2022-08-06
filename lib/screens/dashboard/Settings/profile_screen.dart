@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../constant/colors.dart';
 import '../../../provider/user_provider.dart';
 import '../../../widgets/custom_textfield.dart';
+import '../../../widgets/error_dialogue.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -31,14 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? birthDateInString;
 
   final _formKey = GlobalKey<FormState>();
-  XFile? image;
-  Future pickImage() async {
-    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      image = XFile(file!.path);
-      print("Image path is $image");
-    });
-  }
+
 
   File? imageFile;
 
@@ -78,6 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         TextEditingController(text: dataProvider?.mobile);
     _cityTextEditController = TextEditingController(text: dataProvider?.city);
     _stateTextEditController = TextEditingController(text: dataProvider?.state);
+
+    print(dataProvider?.birth);
 
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -277,6 +273,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   clickFuction: () async {
                     if (_formKey.currentState!.validate()) {
                       // loadingDialogue(context: context);
+                      if(imageFile == null){
+                        errorDialogue(
+                            context: context, title: "Image is required", bodyText: "Please, select image from gallery");
+                      }
                       await userController.updateUserData(
                           name: _nameTextEditController.text,
                           date: birthDateInString,
