@@ -30,6 +30,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             pricePlanController.pricePlan[1].active = false;
             pricePlanController.pricePlan[2].active = false;
             pricePlanController.pricePlan[3].active = false;
+            pricePlanController.pricePlan[4].active = false;
           }
           break;
         case 1:
@@ -37,6 +38,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             pricePlanController.pricePlan[index].active = true;
             pricePlanController.pricePlan[0].active = false;
             pricePlanController.pricePlan[2].active = false;
+            pricePlanController.pricePlan[3].active = false;
             pricePlanController.pricePlan[3].active = false;
           }
           break;
@@ -46,6 +48,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             pricePlanController.pricePlan[0].active = false;
             pricePlanController.pricePlan[1].active = false;
             pricePlanController.pricePlan[3].active = false;
+            pricePlanController.pricePlan[4].active = false;
           }
           break;
         case 3:
@@ -55,6 +58,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             pricePlanController.pricePlan[1].active = false;
             pricePlanController.pricePlan[2].active = false;
           }
+
+          break;
+        case 4:
+          {
+            pricePlanController.pricePlan[index].active = true;
+            pricePlanController.pricePlan[0].active = false;
+            pricePlanController.pricePlan[1].active = false;
+            pricePlanController.pricePlan[2].active = false;
+            pricePlanController.pricePlan[4].active = false;
+          }
+
           break;
       }
     });

@@ -1,4 +1,6 @@
 import 'package:coinbid/Constant/constant.dart';
+import 'package:coinbid/Models/banner_model.dart';
+import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
 import 'package:coinbid/screens/dashboard/home/exchange_coin.dart';
 import 'package:coinbid/screens/dashboard/home/widgets/carosel_slider.dart';
@@ -40,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final dataProvider =
           Provider.of<UserDataProvider>(context, listen: false);
       dataProvider.getData();
+      Provider.of<GetBannersProvider>(context, listen: false).getBanners();
     });
   }
 
@@ -47,6 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
+    BannerModel? banners =
+        Provider.of<GetBannersProvider>(context, listen: false).bannerModel;
+    print("Title of first Banner $banners");
+
     print("Data Provider ${dataProvider}");
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
@@ -149,7 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             SizedBox(height: h * .015),
-            const CustomIndicator(),
+            CustomIndicator(
+              bannerModel: banners,
+            ),
             SizedBox(height: h * .015),
             Row(
               children: [

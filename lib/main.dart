@@ -7,17 +7,16 @@ import 'package:coinbid/Controllers/transaction_controller.dart';
 import 'package:coinbid/Controllers/user_controller.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/provider/bankDetail_provider.dart';
+import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
+import 'package:coinbid/screens/dashboard/home/home_screen.dart';
 import 'package:coinbid/screens/dashboard/home_page.dart';
 import 'package:coinbid/screens/onBoarding/splash_screen.dart';
-import 'package:coinbid/screens/onBoarding/welcome_screen.dart';
-import 'package:coinbid/screens/signup/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -95,6 +94,8 @@ class MyApp extends StatelessWidget {
             create: (context) => BankDetailProvider()),
         ChangeNotifierProvider<SubscriptionProvider>(
             create: (context) => SubscriptionProvider()),
+        ChangeNotifierProvider<GetBannersProvider>(
+            create: (context) => GetBannersProvider()),
       ],
       child: GetMaterialApp(
           defaultTransition: Transition.rightToLeft,
