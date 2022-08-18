@@ -14,7 +14,8 @@ class ExchangeCoinScreen extends StatefulWidget {
   State<ExchangeCoinScreen> createState() => _ExchangeCoinScreenState();
 }
 
-class _ExchangeCoinScreenState extends State<ExchangeCoinScreen> with SingleTickerProviderStateMixin{
+class _ExchangeCoinScreenState extends State<ExchangeCoinScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _controller;
 
   @override
@@ -28,105 +29,116 @@ class _ExchangeCoinScreenState extends State<ExchangeCoinScreen> with SingleTick
     super.dispose();
     _controller.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    final w =MediaQuery.of(context).size.width.toInt();
-    final h =MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width.toInt();
+    final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(13),
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context);
             },
             child: Container(
               width: 10,
               height: 10,
-
               decoration: BoxDecoration(
                   border: Border.all(color: kBorderColor),
-                  borderRadius: BorderRadius.circular(30)
-              ),
-              child: const Center(child: Icon(Icons.arrow_back_ios , color: Colors.black,size: 10,)),
+                  borderRadius: BorderRadius.circular(30)),
+              child: const Center(
+                  child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+                size: 10,
+              )),
             ),
           ),
         ),
-        title: Text("Exchange Coins",style: GoogleFonts.nunito(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black
-        ),),
+        title: Text(
+          "Exchange Coins",
+          style: GoogleFonts.nunito(
+              fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
+        ),
       ),
       body: Column(
         children: [
-          SizedBox(height: h *.03),
+          SizedBox(height: h * .03),
           Padding(
-            padding: const EdgeInsets.only(left: 20,right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  [
-                Expanded(child: PriceBox(boxColor: kOrangeColor, url: 'images/curency.png', price: '\$34500', title: 'Total Cash',
-                  function: (){
-
-                  },
+              children: [
+                Expanded(
+                    child: PriceBox(
+                  boxColor: kOrangeColor,
+                  url: 'images/curency.png',
+                  price: '\$34500',
+                  title: 'Total Cash',
+                  function: () {},
                 )),
-                const SizedBox(width: 7,),
-                Expanded(child: PriceBox(boxColor: kSecondaryColor, url: 'images/star.png', price: '34500', title: 'Total Points',
-                  function: (){},
+                const SizedBox(
+                  width: 7,
+                ),
+                Expanded(
+                    child: PriceBox(
+                  boxColor: kSecondaryColor,
+                  url: 'images/star.png',
+                  price: '34500',
+                  title: 'Total Points',
+                  function: () {},
                 ))
               ],
             ),
           ),
-          SizedBox(height: h *.035),
-           Padding(
-             padding: const EdgeInsets.only(left: 20,right: 20),
-             child: Container(
-               height: 52,
-                 padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                 decoration: BoxDecoration(
-                     color: kLightBackgroundColor,
-                     borderRadius: BorderRadius.circular(30)
-                 ),
+          SizedBox(height: h * .035),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Container(
+              height: 52,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                  color: kLightBackgroundColor,
+                  borderRadius: BorderRadius.circular(30)),
               child: TabBar(
                 controller: _controller,
                 indicator: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                30.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                              color: Colors.white,
-                            ),
-                            labelColor: Colors.black,
-                            labelStyle: GoogleFonts.nunito(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xff444545)
-                            ),
-                            unselectedLabelStyle: GoogleFonts.nunito(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: kTextColor
-                            ),
-                            unselectedLabelColor: kTextColor,
+                  borderRadius: BorderRadius.circular(
+                    30.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  color: Colors.white,
+                ),
+                labelColor: Colors.black,
+                labelStyle: GoogleFonts.nunito(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xff444545)),
+                unselectedLabelStyle: GoogleFonts.nunito(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: kTextColor),
+                unselectedLabelColor: kTextColor,
                 tabs: const [
-                   Tab(
+                  Tab(
                     text: 'Exchange',
                   ),
-                   Tab(
+                  Tab(
                     text: 'Buy',
                   ),
                 ],
               ),
+            ),
           ),
-           ),
           Expanded(
             child: TabBarView(
               physics: const NeverScrollableScrollPhysics(),

@@ -1,7 +1,11 @@
 import 'package:coinbid/constant/colors.dart';
+import 'package:coinbid/provider/getCoins_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../provider/banner_provider.dart';
 
 class BuyCoinPage extends StatefulWidget {
   const BuyCoinPage({Key? key}) : super(key: key);
@@ -16,6 +20,7 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
   static String _valueToString(double value) {
     return value.toStringAsFixed(0);
   }
+
   String firstPrice = '';
   String endPrice = '';
   double average = 0;
@@ -25,21 +30,29 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
     super.initState();
     firstPrice = _currentRangeValues.start.round().toString();
     endPrice = _currentRangeValues.end.round().toString();
-    average = (_currentRangeValues.start.round() + _currentRangeValues.end.round())/2;
+    average =
+        (_currentRangeValues.start.round() + _currentRangeValues.end.round()) /
+            2;
+    Future.delayed(Duration.zero, () {
+      Provider.of<GetCoinsProvider>(context, listen: false).getCoins();
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-    final w =MediaQuery.of(context).size.width.toInt();
-    final h =MediaQuery.of(context).size.height;
+    final coinsProvider = Provider.of<GetCoinsProvider>(context).getCoinModel;
+    final w = MediaQuery.of(context).size.width.toInt();
+    final h = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(left: 20,right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: [
-            SizedBox(height: h *.035),
+            SizedBox(height: h * .035),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(left: 20,right:20,top: 20,bottom: 10),
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 20, bottom: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
                   12.0,
@@ -56,62 +69,62 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
                 color: Colors.white,
               ),
               child: Column(
-               mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    Column(
-                      crossAxisAlignment:CrossAxisAlignment.start,
-                      children: [
-                        Text.rich(
-                            TextSpan(
-                                text: 'Price ',
-                                style: GoogleFonts.nunito(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    color: kOrangeColor
-                                ),
-                                children: <InlineSpan>[
-                                  TextSpan(
-                                    text: 'Range',
-                                    style: GoogleFonts.nunito(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black
-                                    ),
-                                  )
-                                ]
-                            )
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text.rich(TextSpan(
+                              text: 'Price ',
+                              style: GoogleFonts.nunito(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: kOrangeColor),
+                              children: <InlineSpan>[
+                                TextSpan(
+                                  text: 'Range',
+                                  style: GoogleFonts.nunito(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black),
+                                )
+                              ])),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Rs.$firstPrice - Rs.$endPrice',
+                            style: GoogleFonts.nunito(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: kTextColor),
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 30,
+                        width: 140,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: const Color(0xffFDFAF8)),
+                        child: Center(
+                          child: Text(
+                            'Average Price : Rs${average.round()}',
+                            style: GoogleFonts.nunito(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: kOrangeColor),
+                          ),
                         ),
-                        const SizedBox(height: 10,),
-                        Text('Rs.$firstPrice - Rs.$endPrice',style:GoogleFonts.nunito(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: kTextColor
-                        ),)
-                      ],
-                    ),
-                    Container(
-                      height: 30,
-                      width: 140,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: const Color(0xffFDFAF8)
-                      ),
-                      child: Center(
-                        child: Text('Average Price : Rs${average.round()}',style: GoogleFonts.nunito(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color:kOrangeColor
-                        ),),
-                      ),
-                    )
-                  ],),
+                      )
+                    ],
+                  ),
                   SliderTheme(
                     data: const SliderThemeData(
                       trackHeight: 1,
-
                     ),
                     child: RangeSlider(
                       activeColor: kOrangeColor,
@@ -128,7 +141,8 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
                           _currentRangeValues = values;
                           firstPrice = values.start.round().toString();
                           endPrice = values.end.round().toString();
-                          average = (values.start.round() + values.end.round())/2;
+                          average =
+                              (values.start.round() + values.end.round()) / 2;
                         });
                       },
                     ),
@@ -136,19 +150,22 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
                 ],
               ),
             ),
-            SizedBox(height: h *.035),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.025),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.025),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.025),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.025),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.025),
-            BuyCoinBox(id: 'Ex 261564', date: '10/06/2022', price: '4000.00', coin: '5000 coins', function: (){}),
-            SizedBox(height: h *.035),
+            SizedBox(height: h * .035),
+            Container(
+                height: h * .35,
+                width: double.infinity,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: coinsProvider?.coins?.length,
+                    itemBuilder: ((context, index) {
+                      return BuyCoinBox(
+                          id: "${coinsProvider?.coins?[index].coinId}",
+                          date: "${coinsProvider?.coins?[index].date}",
+                          price: "${coinsProvider?.coins?[index].price}",
+                          coin: "${coinsProvider?.coins?[index].coins}",
+                          function: () {});
+                    }))),
+            SizedBox(height: h * .035),
           ],
         ),
       ),
@@ -163,14 +180,14 @@ class BuyCoinBox extends StatelessWidget {
   final String coin;
   final VoidCallback function;
 
-
-  const BuyCoinBox({
-    required this.id,
-    required this.date,
-    required this.price,
-    required this.coin,
-    required this.function,
-    Key? key}) : super(key: key);
+  const BuyCoinBox(
+      {required this.id,
+      required this.date,
+      required this.price,
+      required this.coin,
+      required this.function,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -183,42 +200,50 @@ class BuyCoinBox extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
               color: const Color(0xffFDFBEF),
-              borderRadius: BorderRadius.circular(30)
-          ),
-          child: const Center(child:Image(
-            image: AssetImage('images/buy_icon.png'),
-            width: 25,
-          ),
+              borderRadius: BorderRadius.circular(30)),
+          child: const Center(
+            child: Image(
+              image: AssetImage('images/buy_icon.png'),
+              width: 25,
+            ),
           ),
         ),
         Column(
           children: [
-            Text(id,style: GoogleFonts.nunito(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color:Colors.black
-            ),),
-            const SizedBox(height: 5,),
-            Text(date,style: GoogleFonts.nunito(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color:kTextColor
-            ),),
+            Text(
+              id,
+              style: GoogleFonts.nunito(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              date,
+              style: GoogleFonts.nunito(
+                  fontSize: 12, fontWeight: FontWeight.w400, color: kTextColor),
+            ),
           ],
         ),
         Column(
           children: [
-            Text(price,style: GoogleFonts.nunito(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color:Colors.black
-            ),),
-            const SizedBox(height: 5,),
-            Text(coin,style: GoogleFonts.nunito(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color:kTextColor
-            ),),
+            Text(
+              price,
+              style: GoogleFonts.nunito(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              coin,
+              style: GoogleFonts.nunito(
+                  fontSize: 12, fontWeight: FontWeight.w400, color: kTextColor),
+            ),
           ],
         ),
         Container(
@@ -230,17 +255,17 @@ class BuyCoinBox extends StatelessWidget {
             splashColor: kPrimaryColor.withOpacity(.2),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
-                side: const BorderSide(color: kPrimaryColor)
+                side: const BorderSide(color: kPrimaryColor)),
+            onPressed: () {},
+            child: Text(
+              'Buy',
+              style: GoogleFonts.nunito(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: kPrimaryColor),
             ),
-            onPressed: (){},
-            child: Text('Buy', style: GoogleFonts.nunito(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: kPrimaryColor
-            ),),
           ),
         ),
-
       ],
     );
   }

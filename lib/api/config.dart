@@ -20,4 +20,5 @@ class ApiUrl {
   String updateUserUrl = '$mainUrl/users/update';
   String getSubscriptionPlans = '$mainUrl/users/package';
   String getBanners = '$mainUrl/users/banner';
+  String getCoins = '$mainUrl/users/coin';
 }
