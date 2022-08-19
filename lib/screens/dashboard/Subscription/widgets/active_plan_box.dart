@@ -61,12 +61,16 @@ class ActivePlaneBox extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            name,
-                            style: GoogleFonts.nunito(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black),
+                          SizedBox(
+                            width:170,
+                            child: Text(
+                              name,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.nunito(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
                           ),
                           const SizedBox(
                             height: 5,

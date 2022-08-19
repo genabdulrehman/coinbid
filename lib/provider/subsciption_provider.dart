@@ -10,10 +10,14 @@ class SubscriptionProvider with ChangeNotifier {
       GetSubscriptionController();
   SubscriptionModel subscriptionModel = SubscriptionModel();
   bool isLoading = false;
+
+
   getSubscriptions() async {
     isLoading = true;
+    notifyListeners();
     await getSubscriptionController.getSubsciptionPlans().then((plans) {
       isLoading = false;
+      notifyListeners();
       if (plans.success == true) {
         subscriptionModel = plans;
         notifyListeners();

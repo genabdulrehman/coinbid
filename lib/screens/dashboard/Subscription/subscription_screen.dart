@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Controllers/page_controller.dart';
+import '../../../Models/subscription_model.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({Key? key}) : super(key: key);
@@ -19,36 +20,34 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  bool value = false;
+
+  List<Packages> packages =[];
   double selectedPrice = 0;
   setPlan(int index) {
     setState(() {
       switch (index) {
         case 0:
           {
-            pricePlanController.pricePlan[index].active = true;
-            pricePlanController.pricePlan[1].active = false;
-            pricePlanController.pricePlan[2].active = false;
-            pricePlanController.pricePlan[3].active = false;
-            pricePlanController.pricePlan[4].active = false;
+            for(int i=0 ; i<packages.length ;i++){
+              packages[i].active = false;
+            }
+            packages[index].active = true;
           }
           break;
         case 1:
           {
-            pricePlanController.pricePlan[index].active = true;
-            pricePlanController.pricePlan[0].active = false;
-            pricePlanController.pricePlan[2].active = false;
-            pricePlanController.pricePlan[3].active = false;
-            pricePlanController.pricePlan[3].active = false;
+            for(int i=0 ; i<packages.length ;i++){
+              packages[i].active = false;
+            }
+            packages[index].active = true;
           }
           break;
         case 2:
           {
-            pricePlanController.pricePlan[index].active = true;
-            pricePlanController.pricePlan[0].active = false;
-            pricePlanController.pricePlan[1].active = false;
-            pricePlanController.pricePlan[3].active = false;
-            pricePlanController.pricePlan[4].active = false;
+            for(int i=0 ; i<packages.length ;i++){
+              packages[i].active = false;
+            }
+            packages[index].active = true;
           }
           break;
         case 3:
@@ -89,6 +88,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final subsciptionProvider =
         Provider.of<SubscriptionProvider>(context).subscriptionModel;
+    packages = subsciptionProvider.packages ?? [];
     print("Subsc --> $subsciptionProvider");
     final isLoading = Provider.of<SubscriptionProvider>(context).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
@@ -101,7 +101,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
           ),
         ),
-        body: SingleChildScrollView(
+        body: isLoading == false ?
+        SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: h * .02),
@@ -177,11 +178,26 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               SizedBox(height: h * .02),
               if (subsciptionProvider.packages != null)
                 for (int i = 0; i < subsciptionProvider.packages!.length; i++)
-                  pricePlanController.pricePlan[i].active == false
+                  subsciptionProvider.packages![i].active == false
                       ? GestureDetector(
                           onTap: () {
                             setState(() {
-                              setPlan(i);
+                              for(int i=0 ; i<packages.length ;i++){
+                                packages[i].active = false;
+                              }
+                              packages[i].active = true;
+                              ActivePlaneBox(
+                                ads:
+                                "${subsciptionProvider.packages?[i].banners.toString()} Ads for per day. ",
+                                coins: "${subsciptionProvider.packages?[i].coins} coins included",
+                                validity: "7 days validity.",
+                                name:
+                                '${subsciptionProvider.packages?[i].title.toString()} Package',
+                                price:
+                                '${subsciptionProvider.packages?[i].price.toString()}',
+                                url: 'images/platinum.png',
+                                isRecommended: subsciptionProvider.packages?[i].isRecommended ?? false,
+                              );
                               selectedPrice = subsciptionProvider
                                   .packages![i].price!
                                   .toDouble();
@@ -197,14 +213,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       : ActivePlaneBox(
                           ads:
                               "${subsciptionProvider.packages?[i].banners.toString()} Ads for per day. ",
-                          coins: "100 coins included",
+                          coins: "${subsciptionProvider.packages?[i].coins} coins included",
                           validity: "7 days validity.",
                           name:
                               '${subsciptionProvider.packages?[i].title.toString()} Package',
                           price:
                               '${subsciptionProvider.packages?[i].price.toString()}',
                           url: 'images/platinum.png',
-                          isRecommended: false,
+                          isRecommended: subsciptionProvider.packages?[i].isRecommended ?? false,
                         ),
               SizedBox(height: h * .02),
               Padding(
@@ -216,6 +232,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               SizedBox(height: h * .02),
             ],
           ),
-        ));
+        ):
+            const Center(
+              child: CircularProgressIndicator(),
+            )
+    );
   }
 }

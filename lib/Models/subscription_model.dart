@@ -9,7 +9,7 @@ class SubscriptionModel {
     if (json['packages'] != null) {
       packages = <Packages>[];
       json['packages'].forEach((v) {
-        packages!.add(new Packages.fromJson(v));
+        packages!.add(Packages.fromJson(v));
       });
     }
   }
@@ -30,6 +30,9 @@ class Packages {
   int? price;
   String? expireDate;
   int? banners;
+  int? coins;
+  bool? isRecommended;
+  bool? active = false;
   String? icon;
   int? iV;
 
@@ -37,6 +40,9 @@ class Packages {
       {this.sId,
       this.title,
       this.price,
+        this.coins,
+        this.active,
+        this.isRecommended,
       this.expireDate,
       this.banners,
       this.icon,
@@ -46,6 +52,8 @@ class Packages {
     sId = json['_id'];
     title = json['title'];
     price = json['price'];
+    coins = json['coins'];
+    isRecommended = json['recommended'];
     expireDate = json['expire_date'];
     banners = json['banners'];
     icon = json['icon'];

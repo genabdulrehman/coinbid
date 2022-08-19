@@ -17,6 +17,7 @@ class InactivePlaneBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
       child: Container(
@@ -59,12 +60,16 @@ class InactivePlaneBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.nunito(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                  SizedBox(
+                    width: w*.55,
+                    child: Text(
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.nunito(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black),
+                    ),
                   ),
                   const SizedBox(
                     height: 5,
