@@ -9,6 +9,7 @@ import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/provider/bankDetail_provider.dart';
 import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/getCoins_provider.dart';
+import 'package:coinbid/provider/getWallet_provider.dart';
 import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
 import 'package:coinbid/screens/dashboard/home/home_screen.dart';
@@ -99,6 +100,8 @@ class MyApp extends StatelessWidget {
             create: (context) => GetBannersProvider()),
         ChangeNotifierProvider<GetCoinsProvider>(
             create: (context) => GetCoinsProvider()),
+        ChangeNotifierProvider<GetWalletProvider>(
+            create: (context) => GetWalletProvider()),
       ],
       child: GetMaterialApp(
           defaultTransition: Transition.rightToLeft,

@@ -4,8 +4,10 @@ import 'package:coinbid/screens/dashboard/home/widgets/price_box.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
+import '../../../provider/getWallet_provider.dart';
 
 class ExchangeCoinScreen extends StatefulWidget {
   const ExchangeCoinScreen({Key? key}) : super(key: key);
@@ -22,6 +24,10 @@ class _ExchangeCoinScreenState extends State<ExchangeCoinScreen>
   void initState() {
     _controller = TabController(length: 2, vsync: this);
     super.initState();
+
+    Future.delayed(Duration.zero, () {
+      Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+    });
   }
 
   @override
@@ -32,6 +38,11 @@ class _ExchangeCoinScreenState extends State<ExchangeCoinScreen>
 
   @override
   Widget build(BuildContext context) {
+    final walletProvider =
+        Provider.of<GetWalletProvider>(context, listen: true).getWalletModel;
+    final walletLoading =
+        Provider.of<GetWalletProvider>(context, listen: true).isLoading;
+
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -75,7 +86,7 @@ class _ExchangeCoinScreenState extends State<ExchangeCoinScreen>
                     child: PriceBox(
                   boxColor: kOrangeColor,
                   url: 'images/curency.png',
-                  price: '\$34500',
+                  price: '\$ ${walletProvider?.wallets?.price}',
                   title: 'Total Cash',
                   function: () {},
                 )),
@@ -86,8 +97,8 @@ class _ExchangeCoinScreenState extends State<ExchangeCoinScreen>
                     child: PriceBox(
                   boxColor: kSecondaryColor,
                   url: 'images/star.png',
-                  price: '34500',
-                  title: 'Total Points',
+                  price: '${walletProvider?.wallets?.coins}',
+                  title: 'Total Coins',
                   function: () {},
                 ))
               ],

@@ -41,6 +41,7 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
   @override
   Widget build(BuildContext context) {
     final coinsProvider = Provider.of<GetCoinsProvider>(context).getCoinModel;
+    final coinsLoading = Provider.of<GetCoinsProvider>(context).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
@@ -151,20 +152,26 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
               ),
             ),
             SizedBox(height: h * .035),
-            Container(
-                height: h * .35,
-                width: double.infinity,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: coinsProvider?.coins?.length,
-                    itemBuilder: ((context, index) {
-                      return BuyCoinBox(
-                          id: "${coinsProvider?.coins?[index].coinId}",
-                          date: "${coinsProvider?.coins?[index].date}",
-                          price: "${coinsProvider?.coins?[index].price}",
-                          coin: "${coinsProvider?.coins?[index].coins}",
-                          function: () {});
-                    }))),
+            coinsLoading
+                ? Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Container(
+                    height: h * .35,
+                    width: double.infinity,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: coinsProvider?.coins?.length,
+                        itemBuilder: ((context, index) {
+                          return BuyCoinBox(
+                              id: "${coinsProvider?.coins?[index].coinId}",
+                              date: "${coinsProvider?.coins?[index].date}",
+                              price: "${coinsProvider?.coins?[index].price}",
+                              coin: "${coinsProvider?.coins?[index].coins}",
+                              function: () {});
+                        }))),
             SizedBox(height: h * .035),
           ],
         ),

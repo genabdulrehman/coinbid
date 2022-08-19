@@ -21,4 +21,6 @@ class ApiUrl {
   String getSubscriptionPlans = '$mainUrl/users/package';
   String getBanners = '$mainUrl/users/banner';
   String getCoins = '$mainUrl/users/coin';
+  String getWallet = '$mainUrl/users/wallet';
+  String withdrawAmount = '$mainUrl/users/request/payment';
 }

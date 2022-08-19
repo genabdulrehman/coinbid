@@ -1,4 +1,3 @@
-import 'package:coinbid/Constant/constant.dart';
 import 'package:coinbid/Models/banner_model.dart';
 import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
@@ -8,7 +7,6 @@ import 'package:coinbid/screens/dashboard/home/widgets/google_ads_slider.dart';
 import 'package:coinbid/screens/dashboard/home/widgets/play_ads.dart';
 import 'package:coinbid/screens/dashboard/home/widgets/price_box.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../../Controllers/page_controller.dart';
 import '../../../constant/colors.dart';
+import '../../../provider/getWallet_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -43,16 +42,22 @@ class _HomeScreenState extends State<HomeScreen> {
           Provider.of<UserDataProvider>(context, listen: false);
       dataProvider.getData();
       Provider.of<GetBannersProvider>(context, listen: false).getBanners();
+      Provider.of<GetWalletProvider>(context, listen: false).getwallet();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final walletProvider =
+        Provider.of<GetWalletProvider>(context).getWalletModel;
+    final walletLoading = Provider.of<GetWalletProvider>(context).isLoading;
+    print("wallet Provider : ${walletProvider?.wallets?.coins}");
+
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
     BannerModel? banners =
         Provider.of<GetBannersProvider>(context, listen: false).bannerModel;
-    print("Title of first Banner $banners");
+    print("Title of first Banner ${banners?.banners?.first.image}");
 
     print("Data Provider ${dataProvider}");
     final w = MediaQuery.of(context).size.width.toInt();
@@ -127,34 +132,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             SizedBox(height: h * .015),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                    child: PriceBox(
-                  boxColor: kOrangeColor,
-                  url: 'images/curency.png',
-                  price: '\$34500',
-                  title: 'Total Cash',
-                  function: () {
-                    Navigator.of(context).push(PageCreateRoute()
-                        .createRoute(const ExchangeCoinScreen()));
-                    // Get.to(const ExchangeCoinScreen());
-                  },
-                )),
-                const SizedBox(
-                  width: 7,
-                ),
-                Expanded(
-                    child: PriceBox(
-                  boxColor: kSecondaryColor,
-                  url: 'images/star.png',
-                  price: '34500',
-                  title: 'Total Points',
-                  function: () {},
-                ))
-              ],
-            ),
+            walletLoading
+                ? Container()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: PriceBox(
+                        boxColor: kOrangeColor,
+                        url: 'images/curency.png',
+                        price: '\$ ${walletProvider?.wallets?.price}',
+                        title: 'Total Cash',
+                        function: () {
+                          Navigator.of(context).push(PageCreateRoute()
+                              .createRoute(const ExchangeCoinScreen()));
+                          // Get.to(const ExchangeCoinScreen());
+                        },
+                      )),
+                      const SizedBox(
+                        width: 7,
+                      ),
+                      Expanded(
+                          child: PriceBox(
+                        boxColor: kSecondaryColor,
+                        url: 'images/star.png',
+                        price: '${walletProvider?.wallets?.coins}',
+                        title: 'Total Coins',
+                        function: () {},
+                      ))
+                    ],
+                  ),
             SizedBox(height: h * .015),
             CustomIndicator(
               bannerModel: banners,
