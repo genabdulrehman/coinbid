@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 
 import '../Constant/constant.dart';
 import '../Models/bank_model.dart';
+import '../widgets/error_dialogue.dart';
 
 class GetSubscriptionController {
   String? token;
@@ -37,4 +38,44 @@ class GetSubscriptionController {
     });
     return subscriptionModel;
   }
+
+  Future<void> subscribePlan(context, String planId) async{
+    String url = '$mainUrl/subscribe/plan/$planId';
+   await postJson(url, {} ,
+        headers:{
+          'Content-Type': 'application/json',
+          'user_access_token': token.toString()
+        }
+        , context).then((value) {
+      if (value['success'] == true) {
+       // Navigator.pop(context);
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value['message']);
+      }
+    });
+  }
+
+  Future<void> getSubscriptionPlan(context) async{
+    await getJson(ApiUrl().getSubscribedPlan,
+        headers:{
+          'Content-Type': 'application/json',
+          'user_access_token': token.toString()
+        }
+    ).then((value) {
+      if (value['success'] == true) {
+        print("successfully getting");
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value['message']);
+      }
+    });
+  }
+
 }

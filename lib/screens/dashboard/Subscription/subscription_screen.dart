@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Controllers/getSubsciption_controller.dart';
 import '../../../Controllers/page_controller.dart';
 import '../../../Models/subscription_model.dart';
+import '../../../widgets/error_dialogue.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({Key? key}) : super(key: key);
@@ -22,56 +24,59 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   List<Packages> packages =[];
+  GetSubscriptionController getSubscriptionController =
+  GetSubscriptionController();
   double selectedPrice = 0;
-  setPlan(int index) {
-    setState(() {
-      switch (index) {
-        case 0:
-          {
-            for(int i=0 ; i<packages.length ;i++){
-              packages[i].active = false;
-            }
-            packages[index].active = true;
-          }
-          break;
-        case 1:
-          {
-            for(int i=0 ; i<packages.length ;i++){
-              packages[i].active = false;
-            }
-            packages[index].active = true;
-          }
-          break;
-        case 2:
-          {
-            for(int i=0 ; i<packages.length ;i++){
-              packages[i].active = false;
-            }
-            packages[index].active = true;
-          }
-          break;
-        case 3:
-          {
-            pricePlanController.pricePlan[index].active = true;
-            pricePlanController.pricePlan[0].active = false;
-            pricePlanController.pricePlan[1].active = false;
-            pricePlanController.pricePlan[2].active = false;
-          }
-
-          break;
-        case 4:
-          {
-            pricePlanController.pricePlan[index].active = true;
-            pricePlanController.pricePlan[0].active = false;
-            pricePlanController.pricePlan[1].active = false;
-            pricePlanController.pricePlan[2].active = false;
-            pricePlanController.pricePlan[4].active = false;
-          }
-
-          break;
-      }
-    });
-  }
+  String planId = '';
+  // setPlan(int index) {
+  //   setState(() {
+  //     switch (index) {
+  //       case 0:
+  //         {
+  //           for(int i=0 ; i<packages.length ;i++){
+  //             packages[i].active = false;
+  //           }
+  //           packages[index].active = true;
+  //         }
+  //         break;
+  //       case 1:
+  //         {
+  //           for(int i=0 ; i<packages.length ;i++){
+  //             packages[i].active = false;
+  //           }
+  //           packages[index].active = true;
+  //         }
+  //         break;
+  //       case 2:
+  //         {
+  //           for(int i=0 ; i<packages.length ;i++){
+  //             packages[i].active = false;
+  //           }
+  //           packages[index].active = true;
+  //         }
+  //         break;
+  //       case 3:
+  //         {
+  //           pricePlanController.pricePlan[index].active = true;
+  //           pricePlanController.pricePlan[0].active = false;
+  //           pricePlanController.pricePlan[1].active = false;
+  //           pricePlanController.pricePlan[2].active = false;
+  //         }
+  //
+  //         break;
+  //       case 4:
+  //         {
+  //           pricePlanController.pricePlan[index].active = true;
+  //           pricePlanController.pricePlan[0].active = false;
+  //           pricePlanController.pricePlan[1].active = false;
+  //           pricePlanController.pricePlan[2].active = false;
+  //           pricePlanController.pricePlan[4].active = false;
+  //         }
+  //
+  //         break;
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
@@ -201,6 +206,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               selectedPrice = subsciptionProvider
                                   .packages![i].price!
                                   .toDouble();
+                              planId = subsciptionProvider.packages![i].sId ??'';
                             });
                           },
                           child: InactivePlaneBox(
@@ -227,7 +233,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: CustomButton(
                     title: "Subscribe for Rs.${selectedPrice.round()}",
-                    clickFuction: () {}),
+                    clickFuction: () {
+                      if(planId == ''){
+                        errorDialogue(
+                            context: context,
+                            title: "Selected plan is required",
+                            bodyText: "Please select any plan for subscription.");
+                      }
+                      else{
+                        getSubscriptionController.subscribePlan(context, planId);
+                      }
+                    }),
               ),
               SizedBox(height: h * .02),
             ],
