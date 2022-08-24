@@ -2,8 +2,10 @@ import 'package:coinbid/constant/constant.dart';
 import 'package:coinbid/screens/dashboard/Transaction/widgets/transaction_details.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
+import '../../../provider/transations_provider.dart';
 import '../home/tab_page/buy.dart';
 import '../home/tab_page/exchange.dart';
 
@@ -14,12 +16,17 @@ class TransactionScreen extends StatefulWidget {
   State<TransactionScreen> createState() => _TransactionScreenState();
 }
 
-class _TransactionScreenState extends State<TransactionScreen> with SingleTickerProviderStateMixin{
+class _TransactionScreenState extends State<TransactionScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _controller;
 
   @override
   void initState() {
     _controller = TabController(length: 3, vsync: this);
+    Future.delayed(Duration.zero, () {
+      Provider.of<TransactionsProvider>(context, listen: false)
+          .getTransations();
+    });
     super.initState();
   }
 
@@ -28,30 +35,35 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
     super.dispose();
     _controller.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    final h =MediaQuery.of(context).size.height;
+    final transationsProvider =
+        Provider.of<TransactionsProvider>(context, listen: true)
+            .transactionModel;
+    final isLoading =
+        Provider.of<TransactionsProvider>(context, listen: true).isLoading;
+    final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar:AppBar(
-        title: Text("Transaction",style: GoogleFonts.nunito(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black
-        ),),
+      appBar: AppBar(
+        title: Text(
+          "Transaction",
+          style: GoogleFonts.nunito(
+              fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: h *.02),
+            SizedBox(height: h * .02),
             Container(
               height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                   color: kLightBackgroundColor,
-                  borderRadius: BorderRadius.circular(30)
-              ),
+                  borderRadius: BorderRadius.circular(30)),
               child: TabBar(
                 controller: _controller,
                 indicator: BoxDecoration(
@@ -72,13 +84,11 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
                 labelStyle: GoogleFonts.nunito(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xff444545)
-                ),
+                    color: const Color(0xff444545)),
                 unselectedLabelStyle: GoogleFonts.nunito(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: kTextColor
-                ),
+                    color: kTextColor),
                 unselectedLabelColor: kTextColor,
                 tabs: const [
                   Tab(
@@ -97,10 +107,17 @@ class _TransactionScreenState extends State<TransactionScreen> with SingleTicker
               child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _controller,
-                children:  <Widget>[
-                  TransactionDetail(transactions: transactionController.transactions),
-                  TransactionDetail(transactions: transactionController.transactions),
-                  TransactionDetail(transactions: transactionController.transactions),
+                children: <Widget>[
+                  TransactionDetail(
+                      isLoading: isLoading, transactions: transationsProvider),
+                  TransactionDetail(
+                      isLoading: isLoading, transactions: transationsProvider),
+                  TransactionDetail(
+                      isLoading: isLoading, transactions: transationsProvider),
+                  // TransactionDetail(
+                  //     transactions: transactionController.transactions),
+                  // TransactionDetail(
+                  //     transactions: transactionController.transactions),
                 ],
               ),
             ),

@@ -8,7 +8,9 @@ class ApiConfig {
       authToken: userController.authToken,
       serviceSid: userController.serviceSid);
 }
- String mainUrl = 'https://coinbid11.herokuapp.com';
+
+String mainUrl = 'https://coinbid11.herokuapp.com';
+
 class ApiUrl {
   String signupUrl = '$mainUrl/users/signup';
   String loginUrl = '$mainUrl/users/signin';
@@ -23,4 +25,5 @@ class ApiUrl {
   String getWallet = '$mainUrl/users/wallet';
   String withdrawAmount = '$mainUrl/users/request/payment';
   String getSubscribedPlan = '$mainUrl/get/subscribe/plan';
+  String getTransations = '$mainUrl/users/transactions';
 }
