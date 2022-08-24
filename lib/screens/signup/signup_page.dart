@@ -1,21 +1,14 @@
 import 'package:coinbid/Models/UserModel.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/constant/constant.dart';
-import 'package:coinbid/screens/signup/login_screen.dart';
-import 'package:coinbid/screens/signup/otp_verification.dart';
-import 'package:coinbid/screens/signup/otp_verification_code.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:twilio_phone_verify/twilio_phone_verify.dart';
-
-import '../../Controllers/page_controller.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../widgets/customButton.dart';
 import '../../widgets/custom_button_icon.dart';
 import '../../widgets/custom_textfield.dart';
-import '../../widgets/error_dialogue.dart';
-import 'login_page.dart';
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -30,12 +23,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordTextEditController = TextEditingController();
   final TextEditingController _phoneNumberTextEditController = TextEditingController();
   final TextEditingController _passwordTextEditController = TextEditingController();
+  bool active = false;
+  String phoneNo = '';
 
-   final TwilioPhoneVerify _twilioPhoneVerify = TwilioPhoneVerify(
-  accountSid: 'AC51ff97ecacf05e992f25df3699aa34be', // replace with Account SID
-  authToken: 'e0f7d481f847c74b6dc5a8a43073ad0f',  // replace with Auth Token
-  serviceSid: 'VA1b8f6a2f3b89045812d191de8638b55c' // replace with Service SID
-  );
 
   @override
   void initState() {
@@ -108,22 +98,75 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       hintText: "Email"),
                   SizedBox(height: h*0.020,),
-                  CustomTextField(
-                    textInputType: TextInputType.phone,
-                      controller: _phoneNumberTextEditController,
-                      label: 'Mobile No',
-                      validator: (value) {
-                        String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-                        RegExp regExp = RegExp(pattern);
-                        if (value.length == 0) {
-                          return 'Please enter mobile number';
-                        }
-                        else if (!regExp.hasMatch(value)) {
-                          return 'Please enter valid mobile number';
-                        }
-                        return null;
-                      },
-                      hintText: "+91.."),
+                  IntlPhoneField(
+                    style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black
+                    ),
+                    dropdownTextStyle: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black
+                    ),
+                    onTap: (){
+                      setState(() {
+                        active = true;
+                      });
+                    },
+                    decoration: InputDecoration(
+                     // labelText: 'Phone Number',
+                      label: active == true ? Text('Phone Number' , style: GoogleFonts.nunito(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: kPrimaryColor
+                    ),):null,
+                      labelStyle: GoogleFonts.nunito(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: kPrimaryColor
+                    ),
+                      hintStyle: GoogleFonts.nunito(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xffB9B9BD)
+                      ),
+                      hintText: 'Phone Number',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xffE1E1E5), width: 1.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xffE1E1E5), width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: kPrimaryColor, width: 2.0),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    initialCountryCode: 'IN',
+                    onChanged: (phone) {
+                      print(phone.completeNumber);
+                      phoneNo = phone.completeNumber;
+                    },
+                  ),
+                  // CustomTextField(
+                  //   textInputType: TextInputType.phone,
+                  //     controller: _phoneNumberTextEditController,
+                  //     label: 'Mobile No',
+                  //     validator: (value) {
+                  //       String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+                  //       RegExp regExp = RegExp(pattern);
+                  //       if (value.length == 0) {
+                  //         return 'Please enter mobile number';
+                  //       }
+                  //       else if (!regExp.hasMatch(value)) {
+                  //         return 'Please enter valid mobile number';
+                  //       }
+                  //       return null;
+                  //     },
+                  //     hintText: "+91.."),
                   SizedBox(height: h*0.020,),
                   CustomTextField(
                     controller: _passwordTextEditController,
@@ -179,10 +222,11 @@ class _SignUpPageState extends State<SignUpPage> {
           CustomButton(title: 'Sign Up',
             clickFuction: () async{
               if(_formKey.currentState!.validate()){
+                print(phoneNo);
                 UserModel userModel = UserModel(
                     name: _nameTextEditController.text,
                     password: _passwordTextEditController.text,
-                    phoneNo: _phoneNumberTextEditController.text,
+                    phoneNo: phoneNo,
                     email: _emailTextEditController.text
                 );
                //  userController.verifyPhoneNumber(_phoneNumberTextEditController.text,context,userModel);
@@ -231,8 +275,8 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
 
             ],
-          )
-
+          ),
+          SizedBox(height: h*0.020,),
         ],
       ),
     );

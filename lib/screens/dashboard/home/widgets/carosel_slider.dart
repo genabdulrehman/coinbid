@@ -53,76 +53,75 @@ class CustomIndicatorState extends State<CustomIndicator> {
     ];
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
-    return Column(children: [
-      SizedBox(
-        height: h * .17,
-        child: PageView.builder(
-          physics: const ClampingScrollPhysics(),
-          itemCount: introWidgetsList.length,
-          onPageChanged: (int page) {
-            currentPos = page;
-            setState(() {});
-          },
-          controller: controller,
-          itemBuilder: (context, index) {
-            return introWidgetsList[index];
-          },
+    return CarouselSlider(
+        options: CarouselOptions(
+            height: h*.19,
+            //aspectRatio: 16/9,
+            viewportFraction: 1,
+            initialPage: 0,
+            enableInfiniteScroll: true,
+            reverse: false,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (index, reason) {
+              setState(() {
+                currentPos = index;
+              });
+            }
         ),
-      ),
-      SizedBox(height: h * .010),
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          for (int i = 0; i < introWidgetsList.length; i++)
-            if (i == currentPos) ...[circleBar(true)] else circleBar(false),
-        ],
-      ),
-      // CarouselSlider(
-      //   options: CarouselOptions(
-      //       height: 168,
-      //       aspectRatio: 16/9,
-      //       viewportFraction: 0.8,
-      //       initialPage: 0,
-      //       enableInfiniteScroll: true,
-      //       reverse: false,
-      //       autoPlay: true,
-      //       autoPlayInterval: Duration(seconds: 3),
-      //       autoPlayAnimationDuration: Duration(milliseconds: 800),
-      //       autoPlayCurve: Curves.fastOutSlowIn,
-      //       scrollDirection: Axis.horizontal,
-      //       onPageChanged: (index, reason) {
-      //         setState(() {
-      //           currentPos = index;
-      //         });
-      //       }
-      //   ),
-      //   items: const [
-      //     CarouselBox(boxColor: Color(0xff8480E4), url: 'images/slider_1.png', title: "Earn \$100 Daily what you’ll needed"),
-      //     CarouselBox(boxColor: Color(0xffFEC127), url: 'images/slider_1.png', title: "Earn \$100 Daily what you’ll needed"),
-      //     CarouselBox(boxColor: kOrangeColor, url: 'images/slider_1.png', title: "Earn \$100 Daily what you’ll needed")
-      //   ]
-      // ),
-      // Row(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: listPaths.map((url) {
-      //     int index = listPaths.indexOf(url);
-      //     return Container(
-      //       width: 8.0,
-      //       height: 8.0,
-      //       margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-      //       decoration: BoxDecoration(
-      //         shape: BoxShape.circle,
-      //         color: currentPos == index
-      //             ? const Color.fromRGBO(0, 0, 0, 0.9)
-      //             : const Color.fromRGBO(0, 0, 0, 0.4),
-      //       ),
-      //     );
-      //   }).toList(),
-      // ),
-    ]);
+        items: introWidgetsList
+    );
+    //   Column(children: [
+    //   SizedBox(
+    //     height: h * .17,
+    //     child: PageView.builder(
+    //       physics: const ClampingScrollPhysics(),
+    //       itemCount: introWidgetsList.length,
+    //       onPageChanged: (int page) {
+    //         currentPos = page;
+    //         setState(() {});
+    //       },
+    //       controller: controller,
+    //       itemBuilder: (context, index) {
+    //         return introWidgetsList[index];
+    //       },
+    //     ),
+    //   ),
+    //   SizedBox(height: h * .010),
+    //   Row(
+    //     mainAxisSize: MainAxisSize.min,
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: <Widget>[
+    //       for (int i = 0; i < introWidgetsList.length; i++)
+    //         if (i == currentPos) ...[circleBar(true)] else circleBar(false),
+    //     ],
+    //   ),
+    //   Row(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: listPaths.map((url) {
+    //       int index = listPaths.indexOf(url);
+    //       return Container(
+    //         width: 8.0,
+    //         height: 8.0,
+    //         margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+    //         decoration: BoxDecoration(
+    //           shape: BoxShape.circle,
+    //           color: currentPos == index
+    //               ? const Color.fromRGBO(0, 0, 0, 0.9)
+    //               : const Color.fromRGBO(0, 0, 0, 0.4),
+    //         ),
+    //       );
+    //     }).toList(),
+    //   ),
+    // ]);
   }
 }
+
+
+
 
 class CarouselBox extends StatelessWidget {
   final String url;

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,35 +42,56 @@ class _GoogleAdsBannerState extends State<GoogleAdsBanner> {
   Widget build(BuildContext context) {
     final w =MediaQuery.of(context).size.width.toInt();
     final h =MediaQuery.of(context).size.height;
-    return Column(
-        children: [
-          SizedBox(
-            height: 114,
-            child: PageView.builder(
-              physics: const ClampingScrollPhysics(),
-              itemCount: introWidgetsList.length,
-              onPageChanged: (int page) {
-                currentPos = page;
-                setState(() {});
-              },
-              controller: controller,
-              itemBuilder: (context, index) {
-                return introWidgetsList[index];
-              },
-            ),
-          ),
-          // SizedBox(height: h *.020),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: <Widget>[
-          //     for (int i = 0; i < introWidgetsList.length; i++)
-          //       if (i == currentPos) ...[circleBar(true)] else
-          //         circleBar(false),
-          //   ],
-          // ),
-        ]
+    return CarouselSlider(
+        options: CarouselOptions(
+            height: h*.15,
+            //aspectRatio: 16/9,
+            viewportFraction: 1,
+            initialPage: 0,
+            enableInfiniteScroll: true,
+            reverse: false,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (index, reason) {
+              setState(() {
+                currentPos = index;
+              });
+            }
+        ),
+        items: introWidgetsList
     );
+    //   Column(
+    //     children: [
+    //       SizedBox(
+    //         height: 114,
+    //         child: PageView.builder(
+    //           physics: const ClampingScrollPhysics(),
+    //           itemCount: introWidgetsList.length,
+    //           onPageChanged: (int page) {
+    //             currentPos = page;
+    //             setState(() {});
+    //           },
+    //           controller: controller,
+    //           itemBuilder: (context, index) {
+    //             return introWidgetsList[index];
+    //           },
+    //         ),
+    //       ),
+    //       // SizedBox(height: h *.020),
+    //       Row(
+    //         mainAxisSize: MainAxisSize.min,
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: <Widget>[
+    //           for (int i = 0; i < introWidgetsList.length; i++)
+    //             if (i == currentPos) ...[circleBar(true)] else
+    //               circleBar(false),
+    //         ],
+    //       ),
+    //     ]
+    // );
   }
 }
 

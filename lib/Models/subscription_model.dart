@@ -28,7 +28,7 @@ class Packages {
   String? sId;
   String? title;
   int? price;
-  String? expireDate;
+  int? expireDate;
   int? banners;
   int? coins;
   bool? isRecommended;
@@ -51,7 +51,7 @@ class Packages {
   Packages.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     title = json['title'];
-    price = json['price'];
+    price = json['price'] ?? 200;
     coins = json['coins'];
     isRecommended = json['recommended'];
     expireDate = json['expire_date'];

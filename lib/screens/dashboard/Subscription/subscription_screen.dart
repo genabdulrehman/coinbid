@@ -84,13 +84,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
-      final subscriptionProvider =
           Provider.of<SubscriptionProvider>(context, listen: false)
               .getSubscriptions();
     });
   }
 
-  bool isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +206,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                       name:
                                           '${subsciptionProvider.packages?[i].title.toString()} Package',
                                       price:
-                                          '${subsciptionProvider.packages?[i].price.toString()}',
+                                          subsciptionProvider.packages?[i].price.toString() ?? '',
                                       url: 'images/platinum.png',
                                       isRecommended: subsciptionProvider
                                               .packages?[i].isRecommended ??
@@ -233,11 +232,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                     "${subsciptionProvider.packages?[i].banners.toString()} Ads for per day. ",
                                 coins:
                                     "${subsciptionProvider.packages?[i].coins} coins included",
-                                validity: "7 days validity.",
+                                validity: "${subsciptionProvider.packages?[i].expireDate} days validity.",
                                 name:
                                     '${subsciptionProvider.packages?[i].title.toString()} Package',
                                 price:
-                                    '${subsciptionProvider.packages?[i].price.toString()}',
+                                    subsciptionProvider.packages?[i].price.toString() ?? '',
                                 url: 'images/platinum.png',
                                 isRecommended: subsciptionProvider
                                         .packages?[i].isRecommended ??
@@ -259,11 +258,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                       bodyText:
                                           "Please select any plan for subscription.");
                                 } else {
-                                  loadingDialogue(context: context);
-
                                   getSubscriptionController.subscribePlan(
                                       context, planId);
-                                  Get.back();
                                 }
                               }),
                     ),

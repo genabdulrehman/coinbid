@@ -42,13 +42,11 @@ class GetSubscriptionController {
   }
 
   Future<void> subscribePlan(context, String planId) async {
+    loadingDialogue(context: context);
     String url = '$mainUrl/subscribe/plan/$planId';
     print("Url : of subscribe plan: $url");
-    bool isLoading = false;
     await fetchToken();
-
     try {
-      isLoading = true;
       await putJson(
               url,
               {},
@@ -58,21 +56,19 @@ class GetSubscriptionController {
               },
               context)
           .then((value) {
-        isLoading = false;
         if (value['success'] == true) {
-          // Navigator.pop(context);
+           Get.back();
           Get.snackbar("Successfully", value['message']);
         } else {
-          isLoading = false;
-          Navigator.pop(context);
+          Get.back();
           errorDialogue(
               context: context,
               title: "Something went wrong",
               bodyText: value['message']);
         }
-        isLoading = false;
       });
     } catch (e) {
+      Get.back();
       print("Failed to subscribe : $e");
     }
   }

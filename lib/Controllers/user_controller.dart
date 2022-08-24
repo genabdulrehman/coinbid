@@ -72,6 +72,7 @@ class UserController extends GetxController {
               "name": userModel.name,
               "email": userModel.email,
               "password": userModel.password,
+              "contact" : userModel.phoneNo,
               "verified": true
             },
             context)
