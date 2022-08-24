@@ -1,7 +1,9 @@
 import 'package:coinbid/Models/subscription_model.dart';
 import 'package:coinbid/api/config.dart';
 import 'package:coinbid/api/http.dart';
+import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -39,33 +41,47 @@ class GetSubscriptionController {
     return subscriptionModel;
   }
 
-  Future<void> subscribePlan(context, String planId) async{
+  Future<void> subscribePlan(context, String planId) async {
     String url = '$mainUrl/subscribe/plan/$planId';
-   await postJson(url, {} ,
-        headers:{
-          'Content-Type': 'application/json',
-          'user_access_token': token.toString()
+    print("Url : of subscribe plan: $url");
+    bool isLoading = false;
+    await fetchToken();
+
+    try {
+      isLoading = true;
+      await putJson(
+              url,
+              {},
+              headers: {
+                // 'Content-Type': 'application/json',
+                'user_access_token': token.toString()
+              },
+              context)
+          .then((value) {
+        isLoading = false;
+        if (value['success'] == true) {
+          // Navigator.pop(context);
+          Get.snackbar("Successfully", value['message']);
+        } else {
+          isLoading = false;
+          Navigator.pop(context);
+          errorDialogue(
+              context: context,
+              title: "Something went wrong",
+              bodyText: value['message']);
         }
-        , context).then((value) {
-      if (value['success'] == true) {
-       // Navigator.pop(context);
-      } else {
-        Navigator.pop(context);
-        errorDialogue(
-            context: context,
-            title: "Something went wrong",
-            bodyText: value['message']);
-      }
-    });
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Failed to subscribe : $e");
+    }
   }
 
-  Future<void> getSubscriptionPlan(context) async{
-    await getJson(ApiUrl().getSubscribedPlan,
-        headers:{
-          'Content-Type': 'application/json',
-          'user_access_token': token.toString()
-        }
-    ).then((value) {
+  Future<void> getSubscriptionPlan(context) async {
+    await getJson(ApiUrl().getSubscribedPlan, headers: {
+      'Content-Type': 'application/json',
+      'user_access_token': token.toString()
+    }).then((value) {
       if (value['success'] == true) {
         print("successfully getting");
       } else {
@@ -77,5 +93,4 @@ class GetSubscriptionController {
       }
     });
   }
-
 }
