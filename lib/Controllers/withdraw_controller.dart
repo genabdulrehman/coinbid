@@ -3,6 +3,7 @@ import 'package:coinbid/Models/withdrawl_model.dart';
 import 'package:coinbid/api/config.dart';
 import 'package:coinbid/api/http.dart';
 import 'package:coinbid/widgets/error_dialogue.dart';
+import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -20,28 +21,60 @@ class WithdrawAmountController extends GetxController {
     return data;
   }
 
-  Future<WithdrawlModel> withdrawAmount({
-    String? money,
+  Future<WithdrawlModel> withdrawAmount(
+     money,
     context,
-  }) async {
+  ) async {
+    loadingDialogue(context: context);
     await fetchToken();
     WithdrawlModel withdrawlModel = WithdrawlModel();
-    Object body = {"money": money};
+    Object body = {"money": money.text};
     print("Amount from Ui $money");
 
-    await postJson(ApiUrl().withdrawAmount, body, context, headers: {
+    await postJson(ApiUrl().withdrawAmount, body, context,
+        headers: {
       'Content-Type': 'application/json',
       'user_access_token': token.toString()
     }).then((response) {
       if (response["success"] != null && response["success"] == true) {
         Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+        Get.back();
+        money.clear();
         Get.snackbar('withdraw request', response['message']);
         withdrawlModel = WithdrawlModel.fromJson(response);
         print("Withdraw ---> ${withdrawlModel.message}");
       } else {
-        debugPrint("message x: ${response['message']}");
+        Get.back();
+        Get.snackbar('Something went wrong', response['message']);
       }
     });
     return withdrawlModel;
+  }
+
+
+  Future<void> exchangeCoin(context, coin , price) async {
+    loadingDialogue(context: context);
+    await fetchToken();
+    postJson(ApiUrl().exchangeCoinUrl,
+        {
+            "coin":coin.text,
+            "price":price.text,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'user_access_token': token.toString()
+        },
+        context).then((value) {
+      if (value["success"] != null && value['success'] == true) {
+        Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+        Get.back();
+        coin.clear();
+        price.clear();
+        Get.snackbar('Exchange Request', value['message']);
+      } else {
+        Get.back();
+        Get.snackbar('Something went wrong', value['message']);
+      }
+    });
   }
 }

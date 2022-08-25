@@ -26,4 +26,5 @@ class ApiUrl {
   String withdrawAmount = '$mainUrl/users/request/payment';
   String getSubscribedPlan = '$mainUrl/get/subscribe/plan';
   String getTransations = '$mainUrl/users/transactions';
+  String exchangeCoinUrl = '$mainUrl/users/exchange/coins';
 }

@@ -21,6 +21,8 @@ class ExchangePage extends StatefulWidget {
 
 class _ExchangePageState extends State<ExchangePage> {
   final TextEditingController _money = TextEditingController();
+  final TextEditingController _coinController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     String? amount;
@@ -60,21 +62,42 @@ class _ExchangePageState extends State<ExchangePage> {
                         color: Colors.black),
                   ),
                   SizedBox(height: h * .025),
-                  const ExchangeBox(
+                   ExchangeBox(
                     url: 'images/coin.png',
                     title: 'Coin',
+                    controller: _coinController,
                     label: 'No of Coins',
                     color: kSecondaryColor,
                   ),
                   SizedBox(height: h * .025),
-                  const ExchangeBox(
+                   ExchangeBox(
                     url: 'images/price_icon.png',
                     title: 'Price',
+                    controller: _priceController,
                     label: 'Enter your price',
                     color: kOrangeColor,
                   ),
                   SizedBox(height: h * .035),
-                  CustomButton(title: "Submit", clickFuction: () {})
+                  CustomButton(title: "Submit", clickFuction: () {
+                    if(_coinController.text.isEmpty){
+                      errorDialogue(
+                          context: context,
+                          title: "coin field is required",
+                          bodyText: "please enter coins for exchange"
+                      );
+                    }
+                    else if(_priceController.text.isEmpty){
+                      errorDialogue(
+                          context: context,
+                          title: "price field is required",
+                          bodyText: "please enter amount for exchange"
+                      );
+                    }
+                    else {
+                      withdrawAmountController.exchangeCoin(context, _coinController, _priceController);
+                    }
+
+                  })
                 ],
               ),
             ),
@@ -151,12 +174,14 @@ class _ExchangePageState extends State<ExchangePage> {
                           side: const BorderSide(color: kPrimaryColor)),
                       onPressed: () async {
                         try {
-                          // loadingDialogue(context: context);
-                          await withdrawAmountController.withdrawAmount(
-                              money: _money.text, context: context);
-
-                          // Get.back();
-                          _money.text = "";
+                          if(_money.text.isEmpty){
+                            errorDialogue(
+                                context: context,
+                                title: "amount field is required",
+                                bodyText: "please enter for withdrawal"
+                            );
+                          }
+                          await withdrawAmountController.withdrawAmount(_money, context);
                         } catch (e) {
                           errorDialogue(
                               context: context,
@@ -189,10 +214,12 @@ class ExchangeBox extends StatelessWidget {
   final String title;
   final String label;
   final Color color;
+  final TextEditingController controller;
   const ExchangeBox(
       {required this.color,
       required this.url,
       required this.title,
+      required this.controller,
       required this.label,
       Key? key})
       : super(key: key);
@@ -244,6 +271,7 @@ class ExchangeBox extends StatelessWidget {
           ),
           Expanded(
             child: TextFormField(
+              controller: controller,
               textAlign: TextAlign.end,
               cursorColor: Colors.black,
               style: GoogleFonts.nunito(
