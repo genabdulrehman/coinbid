@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _cityTextEditController = TextEditingController();
   TextEditingController _stateTextEditController = TextEditingController();
   DateTime? birthDate;
-  String? birthDateInString;
+  String birthDateInString = "";
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final dataProvider =
           Provider.of<UserDataProvider>(context, listen: false);
       dataProvider.getData();
+       birthDateInString = dataProvider.getUserModel?.users?.birth ?? '';
 
     });
 
@@ -72,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Provider.of<UserDataProvider>(context).getUserModel?.users;
     final loader =
         Provider.of<UserDataProvider>(context).loading;
-    birthDateInString = dataProvider?.birth;
+    print(birthDateInString);
     _nameTextEditController = TextEditingController(text: dataProvider?.name);
     _phoneTextEditController =
         TextEditingController(text: dataProvider?.mobile);
@@ -200,9 +201,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  birthDateInString == null
+                                  birthDateInString == ""
                                       ? 'Date of Birth'
-                                      : birthDateInString!,
+                                      : birthDateInString,
                                   style: GoogleFonts.nunito(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
@@ -226,6 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 birthDate = datePick;
                                 birthDateInString =
                                     "${birthDate?.day}/${birthDate?.month}/${birthDate?.year}";
+                                print(birthDateInString);
                               });
                             }
                           }),
@@ -286,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             title: "Image is required",
                             bodyText: "Please, select image from gallery");
                       }
-                      else if(birthDateInString == null){
+                      else if(birthDateInString == ""){
                         errorDialogue(
                             context: context,
                             title: "Date of birth is required",

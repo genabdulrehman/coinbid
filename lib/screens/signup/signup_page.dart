@@ -2,12 +2,15 @@ import 'package:coinbid/Models/UserModel.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/constant/constant.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../widgets/customButton.dart';
 import '../../widgets/custom_button_icon.dart';
 import '../../widgets/custom_textfield.dart';
+import '../../widgets/error_dialogue.dart';
+import '../../widgets/loading_widget.dart';
 
 
 class SignUpPage extends StatefulWidget {
@@ -244,7 +247,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(width: 5,),
-              Text("Sign up with google or Facebook",style: GoogleFonts.inter(
+              Text("Sign up with google",style: GoogleFonts.inter(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: kGreyTextColor
@@ -260,22 +263,33 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           ),
           SizedBox(height: h*0.035,),
-          Row(
-            children: [
-              Expanded(
-                child: CustomButtonWithIcon(url: 'images/facebook.png',
-                    title: 'Facebook',
-                    clickFuction: (){}),
-              ),
-              const SizedBox(width: 5,),
-              Expanded(
-                child: CustomButtonWithIcon(url: 'images/google.png',
-                    title: 'Google',
-                    clickFuction: (){}),
-              ),
-
-            ],
-          ),
+          CustomButtonWithIcon(
+              url: 'images/google.png',
+              title: 'Continue with google',
+              clickFuction: () async{
+                loadingDialogue(context: context);
+                await userController
+                    .signInWithGoogle()
+                    .then((value) {
+                  User? user = value.user;
+                  if (user != null) {
+                    print(user.displayName);
+                    userController.signUpAfterGoogleLogin(
+                        user.displayName ?? '',
+                        user.email ?? '',
+                        user.photoURL ?? '',
+                        context);
+                  }
+                }).catchError((onError) {
+                  Navigator.of(context).pop();
+                  errorDialogue(
+                    context: context,
+                    title: "Something went wrong",
+                    bodyText:
+                    onError.message.toString(),
+                  );
+                });
+              }),
           SizedBox(height: h*0.020,),
         ],
       ),

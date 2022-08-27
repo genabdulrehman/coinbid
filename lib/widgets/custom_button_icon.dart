@@ -33,13 +33,13 @@ class CustomButtonWithIcon extends StatelessWidget {
           children: [
             Image(
                 image: AssetImage(url),
-              width: 30,
+              width: 25,
             ),
             const SizedBox(width: 7,),
             Text(title, style: GoogleFonts.quicksand(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: kGreyTextColor
+                color: Colors.black
             ),),
           ],
         )

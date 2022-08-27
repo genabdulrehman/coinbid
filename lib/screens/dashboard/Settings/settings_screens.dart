@@ -1,3 +1,4 @@
+import 'package:coinbid/Constant/constant.dart';
 import 'package:coinbid/screens/dashboard/Settings/bank_detail_screen.dart';
 import 'package:coinbid/screens/dashboard/Settings/profile_screen.dart';
 import 'package:coinbid/screens/dashboard/Settings/profile_verification.dart';
@@ -182,12 +183,15 @@ class _SettingScreenState extends State<SettingScreen> {
                   function: () {},
                   title: 'Cancellation & Refund',
                   url: 'setting_icons/refund.png'),
-              SizedBox(height: h * .02),
+              const Divider(
+                color: kBorderColor,
+                thickness: 1,
+              ),
               SettingTile(
                   function: () async {
                     loadingDialogue(context: context);
                     await Future.delayed(const Duration(seconds: 1), () {});
-
+                    userController.signOut();
                     await removeDataFromHive();
                     Get.back();
                     Get.to(WelcomeScreen());

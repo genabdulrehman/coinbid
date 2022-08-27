@@ -68,7 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final videoAdsProvider =
         Provider.of<VideoAdsProvider>(context, listen: true)
             .videoAdsModel;
-    print("Video Ads ${videoAdsProvider?.videos?[0]}");
+    print("Video Ads ${videoAdsProvider?.videos?.length}");
+
+
     final isLoading =
         Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
@@ -224,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: videoAdsProvider?.videos?.length != null ?
               GetVideo(
-                  videoLink: videoAdsProvider?.videos?.first.video ):
+                  videoLink: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4" ):
                   Center(
                     child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.red)

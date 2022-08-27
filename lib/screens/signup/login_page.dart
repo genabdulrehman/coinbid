@@ -3,6 +3,7 @@ import 'package:coinbid/Controllers/user_controller.dart';
 import 'package:coinbid/screens/dashboard/home/home_screen.dart';
 import 'package:coinbid/widgets/custom_button_icon.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,7 @@ import '../../constant/colors.dart';
 import '../../widgets/customButton.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/error_dialogue.dart';
+import '../../widgets/loading_widget.dart';
 import '../dashboard/home_page.dart';
 import 'forget_password.dart';
 
@@ -123,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           SizedBox(
-            height: h * 0.2,
+            height: h * 0.18,
           ),
           CustomButton(
             title: 'Log in',
@@ -151,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: 5,
               ),
               Text(
-                "Log in with google or Facebook",
+                "Log in with google",
                 style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -171,32 +173,33 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: h * 0.035,
           ),
-          Row(
-            children: [
-              Expanded(
-                child: CustomButtonWithIcon(
-                    url: 'images/facebook.png',
-                    title: 'Facebook',
-                    clickFuction: () {}),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: CustomButtonWithIcon(
-                    url: 'images/google.png',
-                    title: 'Google',
-                    clickFuction: () {
-                      errorDialogue(
-                        context: context,
-                        title: "Check your email",
-                        bodyText:
-                            "We have sent a password recover instructions to your email",
-                      );
-                    }),
-              ),
-            ],
-          )
+          CustomButtonWithIcon(
+              url: 'images/google.png',
+              title: 'Continue with google',
+              clickFuction: () async{
+                loadingDialogue(context: context);
+                await userController
+                    .signInWithGoogle()
+                    .then((value) {
+                  User? user = value.user;
+                  if (user != null) {
+                    print(user.displayName);
+                   userController.signUpAfterGoogleLogin(
+                       user.displayName ?? '',
+                       user.email ?? '',
+                       user.photoURL ?? '',
+                       context);
+                  }
+                }).catchError((onError) {
+                  Navigator.of(context).pop();
+                  errorDialogue(
+                    context: context,
+                    title: "Something went wrong",
+                    bodyText:
+                    onError.message.toString(),
+                  );
+                });
+              }),
         ],
       ),
     );

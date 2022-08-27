@@ -3,6 +3,8 @@ import 'package:coinbid/api/http.dart';
 import 'package:coinbid/provider/user_provider.dart';
 import 'package:coinbid/screens/signup/otp_verification_code.dart';
 import 'package:coinbid/widgets/error_dialogue.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:twilio_phone_verify/twilio_phone_verify.dart';
@@ -19,6 +21,7 @@ import 'package:get/get.dart';
 class UserController extends GetxController {
   static UserController instance = Get.find();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   late Rx<User?> firebaseUser;
   Rx<UserModel> userData = UserModel().obs;
   User? currentUser = FirebaseAuth.instance.currentUser;
@@ -41,7 +44,7 @@ class UserController extends GetxController {
     //binding all Streams
     currentUser = user;
     if (currentUser != null) {
-      userData.bindStream(listenToUser());
+     // userData.bindStream(listenToUser());
     }
   }
 
@@ -170,59 +173,90 @@ class UserController extends GetxController {
     return twilioResponse;
   }
 
-  // Future<void> verifyPhoneNumber(String phoneNumber , context, UserModel userModel) async {
-  //   loadingDialogue(context: context);
-  //   await firebaseAuth.verifyPhoneNumber(
-  //       phoneNumber: phoneNumber,
-  //       verificationCompleted: (PhoneAuthCredential authCredential) {
-  //         otpCode = authCredential.smsCode.toString();
-  //         print(otpCode);
-  //         Navigator.of(context).pop();
-  //         Get.to(() => OtpVerificationCode(
-  //             userModel: userModel,
-  //             otpCode: otpCode,
-  //             verificationCode: verificationId));
-  //       },
-  //       verificationFailed: (FirebaseAuthException error){
-  //         Navigator.pop(context);
-  //         errorDialogue(
-  //             context: context,
-  //             title: "Something went wrong",
-  //             bodyText: error.message.toString());
-  //         print(error.message);
-  //
-  //       },
-  //
-  //       codeSent: (String id , int? token) {
-  //
-  //         verificationId = id;
-  //         print(token.toString());
-  //         Navigator.pop(context);
-  //         Get.to(() => OtpVerificationCode(
-  //             userModel: userModel,
-  //             otpCode: otpCode,
-  //             verificationCode: verificationId));
-  //         // errorDialogue(
-  //         //     context: context,
-  //         //     imageUrl: 'images/correct.png',
-  //         //     title: "Successfully",
-  //         //     bodyText: "Code Send Successfully");
-  //       },
-  //     codeAutoRetrievalTimeout: (String verification) {
-  //       debugPrint("timeout");
-  //       debugPrint("sms code auto retrieval");
-  //
-  //       verificationId = verification;
-  //       Navigator.pop(context);
-  //       errorDialogue(
-  //           context: context,
-  //           title: "Something went wrong",
-  //           bodyText: 'Timed out waiting for SMS.');
-  //       debugPrint("_codeAutoRetrievalTimeout $verification");
-  //     },
-  //
-  //       );
-  // }
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+      await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleSignInAuthentication =
+      await googleSignInAccount!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication!.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      return await firebaseAuth.signInWithCredential(credential);
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> signUpAfterGoogleLogin(
+      String name,
+      String email,
+      String profile,
+      context,
+      ) async {
+    postJson(
+        ApiUrl().signupUrl,
+        {
+            "name":name,
+            "email":email,
+            "profile":profile,
+            "is_social":true
+        },
+        context)
+        .then((value) {
+      if (value['success'] == true) {
+        enterDataToHive(keyName: "user-access-token", value: value['token']);
+        getUserData(header: value['token']);
+        token = value['token'];
+        print("The token is -> ${value['token']}");
+        Navigator.pop(context);
+        Get.offAll(const HomePage());
+      } else {
+        Navigator.pop(context);
+        errorDialogue(
+            context: context,
+            title: "Something went wrong",
+            bodyText: value['message']);
+      }
+    });
+    // await firebaseAuth
+    //     .createUserWithEmailAndPassword(
+    //   email: userModel.email??'',
+    //   password: userModel.password ??'',
+    // ).then((auth) {
+    //   currentUser = auth.user;
+    //   studentReference.doc(currentUser?.uid).set({
+    //     UserModel.iD: currentUser?.uid,
+    //     UserModel.dbName: userModel.name,
+    //     UserModel.dbEmail: userModel.email,
+    //     UserModel.dbPass: userModel.password,
+    //     UserModel.dbPhoneNo: userModel.phoneNo,
+    //     UserModel.dbVerified:true,
+    //   }).then((value) async {
+    //     Navigator.pop(context);
+    //     Get.offAll( () => const PasswordResetLinkSuccessfully(title: "User Signup successfully",));
+    //   }).catchError((onError) {
+    //     Navigator.pop(context);
+    //     errorDialogue(
+    //         context: context,
+    //         title: "Something went wrong",
+    //         bodyText: onError.message.toString());
+    //   });
+    // }).catchError((onError) {
+    //   Navigator.pop(context);
+    //   errorDialogue(
+    //       context: context,
+    //       title: "Something went wrong",
+    //       bodyText: onError.message.toString());
+    // });
+  }
+
+
+
   Future<void> enterDataToHive({String? keyName, String? value}) async {
     var box = await Hive.openBox("UserData");
     box.put("$keyName", value);
@@ -310,7 +344,7 @@ class UserController extends GetxController {
 
   void signOut() async {
     await firebaseAuth.signOut();
-
+    await _googleSignIn.signOut();
     // Get.offAll(const WelcomeScreen());
   }
 
