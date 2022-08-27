@@ -13,6 +13,7 @@ import 'package:coinbid/provider/getWallet_provider.dart';
 import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/provider/transations_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
+import 'package:coinbid/provider/video_ads_provider.dart';
 import 'package:coinbid/screens/dashboard/home/home_screen.dart';
 import 'package:coinbid/screens/dashboard/home_page.dart';
 import 'package:coinbid/screens/onBoarding/splash_screen.dart';
@@ -105,6 +106,8 @@ class MyApp extends StatelessWidget {
             create: (context) => GetWalletProvider()),
         ChangeNotifierProvider<TransactionsProvider>(
             create: (context) => TransactionsProvider()),
+        ChangeNotifierProvider<VideoAdsProvider>(
+            create: (context) => VideoAdsProvider()),
       ],
       child: GetMaterialApp(
           defaultTransition: Transition.rightToLeft,

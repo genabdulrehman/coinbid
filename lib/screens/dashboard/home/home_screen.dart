@@ -1,6 +1,7 @@
 import 'package:coinbid/Models/banner_model.dart';
 import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
+import 'package:coinbid/provider/video_ads_provider.dart';
 import 'package:coinbid/screens/dashboard/home/exchange_coin.dart';
 import 'package:coinbid/screens/dashboard/home/widgets/carosel_slider.dart';
 import 'package:coinbid/screens/dashboard/home/widgets/google_ads_slider.dart';
@@ -43,8 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
       dataProvider.getData();
       Provider.of<GetBannersProvider>(context, listen: false).getBanners();
       Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+      Provider.of<VideoAdsProvider>(context, listen: false).getVideoAds();
+
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<UserDataProvider>(context).getUserModel?.users;
     BannerModel? banners =
         Provider.of<GetBannersProvider>(context, listen: false).bannerModel;
-    print("Title of first Banner ${banners?.banners?.first.image}");
+    print("Title of first Banner ${banners?.banners?.last.image}");
 
-    print("Data Provider ${dataProvider}");
+
+
+    final videoAdsProvider =
+        Provider.of<VideoAdsProvider>(context, listen: true)
+            .videoAdsModel;
+    print("Video Ads ${videoAdsProvider?.videos?[0]}");
+    final isLoading =
+        Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
+      body:
+      Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: [
@@ -201,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             SizedBox(height: h * .015),
+
             Container(
               height: h * .23,
               width: double.infinity,
@@ -209,9 +222,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 border: Border.all(color: kBorderColor),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const GetVideo(
-                  videoLink:
-                      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+              child: videoAdsProvider?.videos?.length != null ?
+              GetVideo(
+                  videoLink: videoAdsProvider?.videos?.first.video ):
+                  Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.red)
+                    ),
+                  )
             ),
             SizedBox(height: h * .017),
             const GoogleAdsBanner(),
@@ -221,3 +239,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
