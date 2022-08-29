@@ -1,8 +1,10 @@
 import 'package:coinbid/screens/dashboard/Subscription/widgets/report_box.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
+import '../../../provider/getReport_provider.dart';
 import '../home/widgets/play_ads.dart';
 
 class PlanReport extends StatefulWidget {
@@ -14,9 +16,19 @@ class PlanReport extends StatefulWidget {
 
 class _PlanReportState extends State<PlanReport> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      Provider.of<GetReportProvider>(context, listen: false).getUserReport();
+    });
+  }
+  @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
+    final reportProvider = Provider.of<GetReportProvider>(context, listen: true).userReportModel;
+    final reportLoading = Provider.of<GetReportProvider>(context, listen: true).isLoading;
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -208,35 +220,35 @@ class _PlanReportState extends State<PlanReport> {
               'images/graph.png',
               0,
             ),
-            const ReportBox(
+             ReportBox(
               'Total Ad Watched',
               'Jun 10-Jun 11',
               'images/graph.png',
-              0,
+              reportProvider?.reports?.adsWatch ?? 0,
             ),
-            const ReportBox(
+             ReportBox(
               'Total Coins Earned',
               'Jun 10-Jun 11',
               'images/graph.png',
-              0,
+              reportProvider?.reports?.coinEarned ?? 0,
             ),
-            const ReportBox(
-              'Total Coins Earned',
+             ReportBox(
+              'Total Converted Coins',
               'Jun 10-Jun 11',
               'images/graph.png',
-              0,
+              reportProvider?.reports?.convertedCoin ?? 0,
             ),
-            const ReportBox(
+             ReportBox(
               'Today Coins Earned',
               'Jun 10-Jun 11',
               'images/graph.png',
-              0,
+              reportProvider?.reports?.todayCoinEarned ?? 0,
             ),
-            const ReportBox(
+             ReportBox(
               'Converted Earnings',
               'Jun 10-Jun 11',
               'images/graph.png',
-              0,
+              reportProvider?.reports?.convertedEarned ?? 0,
             ),
             SizedBox(height: h * .025),
             // Padding(

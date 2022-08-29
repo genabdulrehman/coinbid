@@ -17,7 +17,7 @@ class GetCoinsProvider with ChangeNotifier {
 
   getCoins() async {
     isLoading = true;
-
+    notifyListeners();
     await getCoinsController.getCoins().then((coins) {
       isLoading = false;
       if (coins.success == true) {

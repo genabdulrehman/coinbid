@@ -3,6 +3,7 @@ import 'package:coinbid/provider/getCoins_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/banner_provider.dart';
@@ -42,6 +43,7 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
   Widget build(BuildContext context) {
     final coinsProvider = Provider.of<GetCoinsProvider>(context).getCoinModel;
     final coinsLoading = Provider.of<GetCoinsProvider>(context).isLoading;
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
@@ -160,17 +162,21 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
                   )
                 : Container(
                     height: h * .35,
+                padding: EdgeInsets.symmetric(vertical: 5),
                     width: double.infinity,
                     child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: coinsProvider?.coins?.length,
+                        itemCount: coinsProvider?.orders?.length,
                         itemBuilder: ((context, index) {
-                          return BuyCoinBox(
-                              id: "${coinsProvider?.coins?[index].coinId}",
-                              date: "${coinsProvider?.coins?[index].date}",
-                              price: "${coinsProvider?.coins?[index].price}",
-                              coin: "${coinsProvider?.coins?[index].coins}",
-                              function: () {});
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: BuyCoinBox(
+                                id: "${coinsProvider?.orders?[index].orderId}",
+                                date: "${formatter.format(coinsProvider?.orders?[index].createdAt ?? DateTime.now())}",
+                                price: "${coinsProvider?.orders?[index].price}",
+                                coin: "${coinsProvider?.orders?[index].coin}",
+                                function: () {}),
+                          );
                         }))),
             SizedBox(height: h * .035),
           ],

@@ -1,70 +1,68 @@
+
 class GetCoinModel {
+  GetCoinModel({
+    this.success,
+    this.orders,
+  });
+
   bool? success;
-  List<Coins>? coins;
+  List<Order>? orders;
 
-  GetCoinModel({this.success, this.coins});
+  factory GetCoinModel.fromJson(Map<String, dynamic> json) => GetCoinModel(
+    success: json["success"],
+    orders: List<Order>.from(json["orders"].map((x) => Order.fromJson(x))),
+  );
 
-  GetCoinModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    if (json['coins'] != null) {
-      coins = <Coins>[];
-      json['coins'].forEach((v) {
-        coins!.add(new Coins.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    if (this.coins != null) {
-      data['coins'] = this.coins!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "orders": List<dynamic>.from(orders!.map((x) => x.toJson())),
+  };
 }
 
-class Coins {
-  String? sId;
-  String? coinId;
+class Order {
+  Order({
+    this.id,
+    this.users,
+    this.orderId,
+    this.price,
+    this.coin,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+  });
+
+  String? id;
   String? users;
-  String? coins;
-  String? price;
-  int? status;
-  String? date;
-  int? iV;
+  String? orderId;
+  int? price;
+  int? coin;
+  bool? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? v;
 
-  Coins(
-      {this.sId,
-      this.coinId,
-      this.users,
-      this.coins,
-      this.price,
-      this.status,
-      this.date,
-      this.iV});
+  factory Order.fromJson(Map<String, dynamic> json) => Order(
+    id: json["_id"],
+    users: json["users"],
+    orderId: json["order_id"] == null ? null : json["order_id"],
+    price: json["price"],
+    coin: json["coin"],
+    status: json["status"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    v: json["__v"],
+  );
 
-  Coins.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    coinId = json['coin_id'];
-    users = json['users'];
-    coins = json['coins'];
-    price = json['price'];
-    status = json['status'];
-    date = json['date'];
-    iV = json['__v'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['coin_id'] = this.coinId;
-    data['users'] = this.users;
-    data['coins'] = this.coins;
-    data['price'] = this.price;
-    data['status'] = this.status;
-    data['date'] = this.date;
-    data['__v'] = this.iV;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "users": users,
+    "order_id": orderId == null ? null : orderId,
+    "price": price,
+    "coin": coin,
+    "status": status,
+    "created_at": createdAt,
+    "updated_at": updatedAt,
+    "__v": v,
+  };
 }

@@ -49,7 +49,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: ClipOval(
                                       child: Image(
-                                        image: NetworkImage(
+                                        image:  NetworkImage(
                                             "${widget.transactions!.transactions?[i].users?.profile}"),
                                         width: 30,
                                       ),

@@ -26,7 +26,7 @@ class GetCoinsController {
     }).then((plans) {
       if (plans["success"] != null && plans["success"] == true) {
         getCoinModel = GetCoinModel.fromJson(plans);
-        print("Bnners ---> ${getCoinModel.coins?.first.coins}");
+        print("Bnners ---> ${getCoinModel.orders?.first.price}");
       } else {
         debugPrint("message x: ${plans['message']}");
       }
