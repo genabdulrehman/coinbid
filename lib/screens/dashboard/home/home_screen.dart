@@ -10,7 +10,6 @@ import 'package:coinbid/screens/dashboard/home/widgets/price_box.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Controllers/page_controller.dart';
@@ -45,16 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<GetBannersProvider>(context, listen: false).getBanners();
       Provider.of<GetWalletProvider>(context, listen: false).getwallet();
       Provider.of<VideoAdsProvider>(context, listen: false).getVideoAds();
-
     });
   }
 
+  int counterIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final walletProvider =
-        Provider.of<GetWalletProvider>(context).getWalletModel;
-    final walletLoading = Provider.of<GetWalletProvider>(context).isLoading;
+        Provider.of<GetWalletProvider>(context, listen: true).getWalletModel;
+    final walletLoading =
+        Provider.of<GetWalletProvider>(context, listen: true).isLoading;
     print("wallet Provider : ${walletProvider?.wallets?.coins}");
 
     final dataProvider =
@@ -63,21 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<GetBannersProvider>(context, listen: false).bannerModel;
     print("Title of first Banner ${banners?.banners?.last.image}");
 
-
-
     final videoAdsProvider =
-        Provider.of<VideoAdsProvider>(context, listen: true)
-            .videoAdsModel;
-    print("Video Ads ${videoAdsProvider?.videos?.length}");
-
+        Provider.of<VideoAdsProvider>(context, listen: true).videoAdsModel;
+    print("Video Ads @@@@@@@@@@ ---> ${videoAdsProvider?.videos?[0].coins}");
 
     final isLoading =
         Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body:
-      Container(
+      body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: [
@@ -147,7 +142,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: h * .015),
             walletLoading
-                ? Container()
+                ? Container(
+                    height: 50,
+                    width: 50,
+                    child: CircularProgressIndicator(),
+                  )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -192,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  "(0/5)",
+                  "(${counterIndex}/5)",
                   style: GoogleFonts.nunito(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -215,24 +214,34 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             SizedBox(height: h * .015),
-
             Container(
-              height: h * .23,
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                border: Border.all(color: kBorderColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: videoAdsProvider?.videos?.length != null ?
-              GetVideo(
-                  videoLink: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4" ):
-                  Center(
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.red)
-                    ),
-                  )
-            ),
+                height: h * .23,
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: kBorderColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: videoAdsProvider?.videos?.length != null
+                    ? GetVideo(
+                        videoModel: videoAdsProvider,
+                        onComplete: (isComplete) {
+                          Future.delayed(Duration.zero, () async {
+                            setState(() {
+                              counterIndex = isComplete;
+                              print("Is video Complete : $isComplete");
+                              Provider.of<GetWalletProvider>(context,
+                                      listen: false)
+                                  .getwallet();
+                            });
+                          });
+                        },
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.red)),
+                      )),
             SizedBox(height: h * .017),
             const GoogleAdsBanner(),
           ],
@@ -241,5 +250,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
