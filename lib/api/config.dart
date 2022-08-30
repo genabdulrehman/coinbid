@@ -1,6 +1,5 @@
 import 'package:coinbid/Constant/constant.dart';
 import 'package:twilio_phone_verify/twilio_phone_verify.dart';
-import 'package:http/http.dart' as http;
 
 class ApiConfig {
   final TwilioPhoneVerify twilioPhoneVerify = TwilioPhoneVerify(
@@ -30,4 +29,5 @@ class ApiUrl {
   String getVideoAdsUrl = '$mainUrl/users/videos/ads';
   String watchAdds = '$mainUrl/users/watch/ads';
   String getUserReportUrl = '$mainUrl/users/reports';
+  String userBuyCoinUrl = '$mainUrl/users/buy/coins';
 }

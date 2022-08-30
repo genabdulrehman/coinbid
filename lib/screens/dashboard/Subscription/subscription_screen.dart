@@ -1,13 +1,10 @@
 import 'package:coinbid/constant/colors.dart';
-import 'package:coinbid/constant/constant.dart';
 import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/screens/dashboard/Subscription/plan_report.dart';
 import 'package:coinbid/screens/dashboard/Subscription/widgets/active_plan_box.dart';
 import 'package:coinbid/screens/dashboard/Subscription/widgets/inActive_plan_box.dart';
 import 'package:coinbid/widgets/customButton.dart';
-import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -98,7 +95,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     packages = subsciptionProvider.packages ?? [];
     print("Subsc --> $subsciptionProvider");
     var isLoading = Provider.of<SubscriptionProvider>(context).isLoading;
-    final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: AppBar(
@@ -223,7 +219,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                 child: InactivePlaneBox(
                                   title:
                                       '${subsciptionProvider.packages?[i].title.toString()} Package',
-                                  url: 'images/platinum.png',
+                                  url: subsciptionProvider.packages?[i].icon ?? '',
                                   price:
                                       '${subsciptionProvider.packages?[i].price.toString()}',
                                 ))
@@ -237,7 +233,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                     '${subsciptionProvider.packages?[i].title.toString()} Package',
                                 price:
                                     subsciptionProvider.packages?[i].price.toString() ?? '',
-                                url: 'images/platinum.png',
+                                url: subsciptionProvider.packages?[i].icon ?? '',
                                 isRecommended: subsciptionProvider
                                         .packages?[i].isRecommended ??
                                     false,

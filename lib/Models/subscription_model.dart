@@ -55,7 +55,7 @@ class Packages {
     coins = json['coins'];
     isRecommended = json['recommended'];
     expireDate = json['expire_date'];
-    banners = json['banners'];
+    banners = json['ads'];
     icon = json['icon'];
     iV = json['__v'];
   }

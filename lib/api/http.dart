@@ -71,7 +71,7 @@ Future<dynamic> getJson(String url, {Map<String, String>? headers}) {
       });
 }
 
-Future<dynamic> putJson(String url, Object body, context,
+Future<dynamic> putJson(String url, Object? body, context,
     {Map<String, String>? headers}) {
   return http
       .put(Uri.parse(url),

@@ -1,15 +1,9 @@
-import 'package:coinbid/Controllers/withdraw_controller.dart';
 import 'package:coinbid/constant/constant.dart';
-import 'package:coinbid/provider/getWallet_provider.dart';
 import 'package:coinbid/widgets/customButton.dart';
 import 'package:coinbid/widgets/error_dialogue.dart';
-import 'package:coinbid/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
 import '../../../../constant/colors.dart';
 
 class ExchangePage extends StatefulWidget {

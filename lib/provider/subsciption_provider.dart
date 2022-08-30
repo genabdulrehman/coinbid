@@ -1,16 +1,17 @@
 import 'package:coinbid/Controllers/getSubsciption_controller.dart';
+import 'package:coinbid/Models/active_plan_model.dart';
 import 'package:coinbid/Models/subscription_model.dart';
 import 'package:flutter/material.dart';
 
-import '../Controllers/user/getUser_controller.dart';
-import '../Models/getUser_model.dart';
+
 
 class SubscriptionProvider with ChangeNotifier {
   GetSubscriptionController getSubscriptionController =
       GetSubscriptionController();
   SubscriptionModel subscriptionModel = SubscriptionModel();
+  ActivePlanModel activePlanModel = ActivePlanModel();
   bool isLoading = false;
-
+  bool packageLoading = false;
 
   getSubscriptions() async {
     isLoading = true;
@@ -24,4 +25,18 @@ class SubscriptionProvider with ChangeNotifier {
       }
     });
   }
+
+  getUserActivePackage() async {
+    packageLoading = true;
+    notifyListeners();
+    await getSubscriptionController.getSubscribedPackage().then((plans) {
+      packageLoading = false;
+      notifyListeners();
+      if (plans.success == true) {
+        activePlanModel = plans;
+        notifyListeners();
+      }
+    });
+  }
+
 }

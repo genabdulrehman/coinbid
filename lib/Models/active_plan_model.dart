@@ -1,7 +1,7 @@
 
 
-class Welcome {
-  Welcome({
+class ActivePlanModel {
+  ActivePlanModel({
     this.success,
     this.packages,
   });
@@ -9,7 +9,7 @@ class Welcome {
   bool? success;
   List<Package>? packages;
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+  factory ActivePlanModel.fromJson(Map<String, dynamic> json) => ActivePlanModel(
     success: json["success"],
     packages: List<Package>.from(json["packages"].map((x) => Package.fromJson(x))),
   );
@@ -27,7 +27,8 @@ class Package {
     this.packages,
     this.status,
     this.refound,
-    this.date,
+    this.createdAt,
+    this.updatedAt,
     this.v,
   });
 
@@ -36,7 +37,8 @@ class Package {
   Packages? packages;
   bool? status;
   bool? refound;
-  DateTime? date;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   int? v;
 
   factory Package.fromJson(Map<String, dynamic> json) => Package(
@@ -45,17 +47,19 @@ class Package {
     packages: Packages.fromJson(json["packages"]),
     status: json["status"],
     refound: json["refound"],
-    date: DateTime.parse(json["date"]),
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
     v: json["__v"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
     "users": users,
-    "packages": packages!.toJson(),
+    "packages": packages?.toJson(),
     "status": status,
     "refound": refound,
-    "date": date!.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
     "__v": v,
   };
 }
@@ -66,36 +70,39 @@ class Packages {
     this.totalAds,
     this.id,
     this.title,
-    this.price,
     this.expireDate,
     this.banners,
-    this.coins,
     this.recommended,
     this.v,
+    this.coins,
+    this.price,
+    this.icon
   });
 
   int? ads;
   int? totalAds;
   String? id;
   String? title;
-  int? price;
   int? expireDate;
   int? banners;
-  int? coins;
   bool? recommended;
   int? v;
+  int? coins;
+  int? price;
+  String? icon;
 
   factory Packages.fromJson(Map<String, dynamic> json) => Packages(
     ads: json["ads"],
     totalAds: json["total_ads"],
     id: json["_id"],
     title: json["title"],
-    price: json["price"],
     expireDate: json["expire_date"],
     banners: json["banners"],
-    coins: json["coins"],
     recommended: json["recommended"],
     v: json["__v"],
+    coins: json["coins"],
+    price: json["price"],
+    icon: json["icon"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -103,11 +110,11 @@ class Packages {
     "total_ads": totalAds,
     "_id": id,
     "title": title,
-    "price": price,
     "expire_date": expireDate,
     "banners": banners,
-    "coins": coins,
     "recommended": recommended,
     "__v": v,
+    "coins": coins,
+    "price": price,
   };
 }

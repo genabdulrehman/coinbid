@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../Models/price_plan_model.dart';
 import '../../../../constant/colors.dart';
 
 class ActivePlaneBox extends StatelessWidget {
@@ -49,8 +48,11 @@ class ActivePlaneBox extends StatelessWidget {
                             color: const Color(0xffFFF7F1),
                             borderRadius: BorderRadius.circular(30)),
                         child: Center(
-                          child: Image(
-                            image: AssetImage(url),
+                          child: url != '' ? Image(
+                            image: NetworkImage(url),
+                            width: 18,
+                          ):Image(
+                            image: AssetImage('images/platinum.png'),
                             width: 18,
                           ),
                         ),

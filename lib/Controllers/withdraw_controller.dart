@@ -1,14 +1,13 @@
-import 'package:coinbid/Models/getCoin_model.dart';
+
 import 'package:coinbid/Models/withdrawl_model.dart';
 import 'package:coinbid/api/config.dart';
 import 'package:coinbid/api/http.dart';
-import 'package:coinbid/widgets/error_dialogue.dart';
 import 'package:coinbid/widgets/loading_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/getCoins_provider.dart';
 import '../provider/getWallet_provider.dart';
 
 class WithdrawAmountController extends GetxController {
@@ -77,4 +76,28 @@ class WithdrawAmountController extends GetxController {
       }
     });
   }
+
+  Future<void> buyCoin(context, String id) async {
+    loadingDialogue(context: context);
+    String url = '${ApiUrl().userBuyCoinUrl}/$id';
+    await fetchToken();
+    putJson(url,
+        {},
+        headers: {
+          'Content-Type': 'application/json',
+          'user_access_token': token.toString()
+        },
+        context).then((value) {
+      if (value["success"] != null && value['success'] == true) {
+        Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+        Provider.of<GetCoinsProvider>(context, listen: false).getCoins();
+        Get.back();
+        Get.snackbar('Order Buy Successfully', value['message']);
+      } else {
+        Get.back();
+        Get.snackbar('Something went wrong', value['message']);
+      }
+    });
+  }
+
 }

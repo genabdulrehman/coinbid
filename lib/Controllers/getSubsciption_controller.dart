@@ -1,3 +1,4 @@
+import 'package:coinbid/Models/active_plan_model.dart';
 import 'package:coinbid/Models/subscription_model.dart';
 import 'package:coinbid/api/config.dart';
 import 'package:coinbid/api/http.dart';
@@ -73,20 +74,22 @@ class GetSubscriptionController {
     }
   }
 
-  Future<void> getSubscriptionPlan(context) async {
+  Future<ActivePlanModel> getSubscribedPackage({
+    context,
+  }) async {
+    await fetchToken();
+    ActivePlanModel activePlanModel = ActivePlanModel();
+
     await getJson(ApiUrl().getSubscribedPlan, headers: {
       'Content-Type': 'application/json',
       'user_access_token': token.toString()
-    }).then((value) {
-      if (value['success'] == true) {
-        print("successfully getting");
+    }).then((plans) {
+      if (plans["success"] != null && plans["success"] == true) {
+        activePlanModel = ActivePlanModel.fromJson(plans);
       } else {
-        Navigator.pop(context);
-        errorDialogue(
-            context: context,
-            title: "Something went wrong",
-            bodyText: value['message']);
+        debugPrint("message x: ${plans['message']}");
       }
     });
+    return activePlanModel;
   }
 }

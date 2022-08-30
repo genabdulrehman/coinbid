@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:coinbid/Models/getTrasactions_model.dart';
-
-import '../../../../Models/transaction_model.dart';
 import '../../../../constant/colors.dart';
 
 class TransactionDetail extends StatefulWidget {
@@ -43,16 +40,18 @@ class _TransactionDetailState extends State<TransactionDetail> {
                               children: [
                                 CircleAvatar(
                                   radius: 30,
-                                  // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
+                                  // backgroundImage: widget.transactions!.transactions?[i].from?.profile != null?NetworkImage(widget.transactions!.transactions?[i].from?.profile ??''):null,
                                   backgroundColor: kLightBackgroundColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipOval(
-                                      child: Image(
-                                        image:  NetworkImage(
-                                            "${widget.transactions!.transactions?[i].users?.profile}"),
-                                        width: 30,
-                                      ),
+                                  child: widget.transactions!.transactions?[i].from?.profile == null ? ClipOval(
+                                    child: Image(
+                                      image: AssetImage('images/profile.png'),
+                                      width: 30,
+                                    ),
+                                  ):
+                                  ClipOval(
+                                    child: Image(
+                                      image: NetworkImage(widget.transactions!.transactions?[i].from?.profile ??''),
+                                      width: 40,
                                     ),
                                   ),
                                 ),
@@ -63,14 +62,14 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     width: 18,
                                     height: 18,
                                     decoration: BoxDecoration(
-                                        color: true == true
+                                        color: widget.transactions?.transactions?[i].received == true
                                             ? kPrimaryColor
                                             : kOrangeColor,
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
                                       child: Icon(
-                                        true == true
+                                        widget.transactions?.transactions?[i].received == true
                                             ? Icons.call_received_rounded
                                             : Icons.call_made_outlined,
                                         color: Colors.white,
@@ -88,9 +87,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  true == true
-                                      ? "From ${widget.transactions?.transactions?[i].users?.name}"
-                                      : " widget.transactions[i].user",
+                                  widget.transactions?.transactions?[i].received == true
+                                      ? "From ${widget.transactions?.transactions?[i].from?.name}"
+                                      : " ${widget.transactions?.transactions?[i].from?.name}",
                                   style: GoogleFonts.nunito(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -100,9 +99,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   height: 5,
                                 ),
                                 Text(
-                                  true == true
-                                      ? "${widget.transactions?.transactions?[i].transaction}"
-                                      : "${widget.transactions?.transactions?[i].transaction} Payment Transfered",
+                                  widget.transactions?.transactions?[i].received == true
+                                      ? "Received to My Account"
+                                      : "Payment Transferred",
                                   // overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.nunito(
                                       fontSize: 12,
@@ -117,17 +116,17 @@ class _TransactionDetailState extends State<TransactionDetail> {
                               height: 36,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: true == true
+                                  color: widget.transactions?.transactions?[i].received == true
                                       ? const Color(0xffF4FFFC)
                                       : const Color(0xffFFFBF9)),
                               child: Center(
                                 child: Text(
-                                  "${widget.transactions?.transactions?[i].transaction}",
+                                  "+\$${widget.transactions?.transactions?[i].price}",
                                   maxLines: 1,
                                   style: GoogleFonts.nunito(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
-                                      color: true == true
+                                      color: widget.transactions?.transactions?[i].received == true
                                           ? kPrimaryColor
                                           : kOrangeColor),
                                 ),

@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../../../constant/colors.dart';
 import '../../../provider/getReport_provider.dart';
-import '../home/widgets/play_ads.dart';
+import '../../../provider/subsciption_provider.dart';
+
 
 class PlanReport extends StatefulWidget {
   const PlanReport({Key? key}) : super(key: key);
@@ -21,14 +22,16 @@ class _PlanReportState extends State<PlanReport> {
     super.initState();
     Future.delayed(Duration.zero, () {
       Provider.of<GetReportProvider>(context, listen: false).getUserReport();
+      Provider.of<SubscriptionProvider>(context, listen: false).getUserActivePackage();
     });
   }
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     final reportProvider = Provider.of<GetReportProvider>(context, listen: true).userReportModel;
     final reportLoading = Provider.of<GetReportProvider>(context, listen: true).isLoading;
+    final packageProvider = Provider.of<SubscriptionProvider>(context, listen: true).activePlanModel;
+    final packageLoading = Provider.of<SubscriptionProvider>(context, listen: true).packageLoading;
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -75,7 +78,7 @@ class _PlanReportState extends State<PlanReport> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Active Plan - Platinum",
+                          "Active Plan - ${packageProvider.packages?[0].packages?.title ??''}",
                           style: GoogleFonts.nunito(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -85,7 +88,7 @@ class _PlanReportState extends State<PlanReport> {
                           height: 5,
                         ),
                         Text(
-                          'Rs.500',
+                          'Rs.${packageProvider.packages?[0].packages?.price ??''}',
                           style: GoogleFonts.nunito(
                               fontSize: 36,
                               fontWeight: FontWeight.w700,
@@ -94,29 +97,29 @@ class _PlanReportState extends State<PlanReport> {
                       ],
                     ),
                   ),
-                  Expanded(
-                      flex: 3,
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context).push(PageCreateRoute().createRoute(const PlanReport()));
-                        },
-                        child: Container(
-                          height: 24,
-                          width: 95,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: const Color(0xffECECEC)),
-                          child: Center(
-                            child: Text(
-                              'Change Plan',
-                              style: GoogleFonts.nunito(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black),
-                            ),
-                          ),
-                        ),
-                      )),
+                  // Expanded(
+                  //     flex: 3,
+                  //     child: GestureDetector(
+                  //       onTap: () {
+                  //         // Navigator.of(context).push(PageCreateRoute().createRoute(const PlanReport()));
+                  //       },
+                  //       child: Container(
+                  //         height: 24,
+                  //         width: 95,
+                  //         decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(30),
+                  //             color: const Color(0xffECECEC)),
+                  //         child: Center(
+                  //           child: Text(
+                  //             'Change Plan',
+                  //             style: GoogleFonts.nunito(
+                  //                 fontSize: 12,
+                  //                 fontWeight: FontWeight.w500,
+                  //                 color: Colors.black),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     )),
                 ],
               ),
             ),
@@ -151,8 +154,11 @@ class _PlanReportState extends State<PlanReport> {
                         decoration: BoxDecoration(
                             color: const Color(0xffFFF7F1),
                             borderRadius: BorderRadius.circular(30)),
-                        child: const Center(
-                          child: Image(
+                        child: Center(
+                          child: packageProvider.packages?[0].packages?.icon != '' ? Image(
+                            image: NetworkImage(packageProvider.packages?[0].packages?.icon ??''),
+                            width: 18,
+                          ):Image(
                             image: AssetImage('images/platinum.png'),
                             width: 18,
                           ),
@@ -166,7 +172,7 @@ class _PlanReportState extends State<PlanReport> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Platinum Package',
+                            packageProvider.packages?[0].packages?.title ??'',
                             style: GoogleFonts.nunito(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,

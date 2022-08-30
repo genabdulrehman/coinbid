@@ -1,12 +1,13 @@
+import 'package:coinbid/Constant/constant.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/provider/getCoins_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../provider/banner_provider.dart';
+
 
 class BuyCoinPage extends StatefulWidget {
   const BuyCoinPage({Key? key}) : super(key: key);
@@ -18,9 +19,7 @@ class BuyCoinPage extends StatefulWidget {
 class _BuyCoinPageState extends State<BuyCoinPage> {
   RangeValues _currentRangeValues = const RangeValues(500, 1000);
 
-  static String _valueToString(double value) {
-    return value.toStringAsFixed(0);
-  }
+
 
   String firstPrice = '';
   String endPrice = '';
@@ -44,7 +43,6 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
     final coinsProvider = Provider.of<GetCoinsProvider>(context).getCoinModel;
     final coinsLoading = Provider.of<GetCoinsProvider>(context).isLoading;
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Padding(
@@ -175,7 +173,9 @@ class _BuyCoinPageState extends State<BuyCoinPage> {
                                 date: "${formatter.format(coinsProvider?.orders?[index].createdAt ?? DateTime.now())}",
                                 price: "${coinsProvider?.orders?[index].price}",
                                 coin: "${coinsProvider?.orders?[index].coin}",
-                                function: () {}),
+                                function: () {
+                                  withdrawAmountController.buyCoin(context, coinsProvider?.orders?[index].id ??'');
+                                }),
                           );
                         }))),
             SizedBox(height: h * .035),
@@ -222,6 +222,8 @@ class BuyCoinBox extends StatelessWidget {
           ),
         ),
         Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               id,
@@ -269,7 +271,7 @@ class BuyCoinBox extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
                 side: const BorderSide(color: kPrimaryColor)),
-            onPressed: () {},
+            onPressed: function,
             child: Text(
               'Buy',
               style: GoogleFonts.nunito(
