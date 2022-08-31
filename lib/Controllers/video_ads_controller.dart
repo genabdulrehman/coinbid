@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:coinbid/Models/video_ads_model.dart';
+import 'package:coinbid/widgets/error_dialogue.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -38,16 +41,22 @@ class VideoAdsController {
   }
 
   Future<void> watchAdds({context, String? id}) async {
+    var res;
     await fetchToken();
     print(token.toString());
     Map<String, dynamic> body = {};
-    print("Watch adds is called");
+    print("Watch adds is called on $id");
 
-    await putJson("${ApiUrl().watchAdds}/$id", body, context, headers: {
-      'Content-Type': 'application/json',
-      'user_access_token': token.toString()
-    });
+    try {
+      var response = await putJson("${ApiUrl().watchAdds}/$id", body, context,
+          headers: {'user_access_token': token.toString()});
 
-    // await Provider.of<GetWalletProvider>(context).getwallet();
+      print("Successfully add is watched");
+      await Provider.of<GetWalletProvider>(context, listen: false).getwallet();
+    } catch (e) {
+      print("Status Code os : $e");
+
+      errorDialogue(context: context, title: "Error", bodyText: e.toString());
+    }
   }
 }

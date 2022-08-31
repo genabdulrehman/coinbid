@@ -21,15 +21,18 @@ class GetWalletModel {
 }
 
 class Wallets {
+  int? counter;
   String? sId;
   int? coins;
   String? users;
   int? price;
   int? iV;
 
-  Wallets({this.sId, this.coins, this.users, this.price, this.iV});
+  Wallets(
+      {this.counter, this.sId, this.coins, this.users, this.price, this.iV});
 
   Wallets.fromJson(Map<String, dynamic> json) {
+    counter = json['counter'];
     sId = json['_id'];
     coins = json['coins'];
     users = json['users'];
@@ -39,6 +42,7 @@ class Wallets {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['counter'] = this.counter;
     data['_id'] = this.sId;
     data['coins'] = this.coins;
     data['users'] = this.users;

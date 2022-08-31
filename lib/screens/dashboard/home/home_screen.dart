@@ -48,29 +48,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int counterIndex = 0;
+  bool allVideoWatched = false;
 
   @override
   Widget build(BuildContext context) {
     final walletProvider =
         Provider.of<GetWalletProvider>(context, listen: true).getWalletModel;
+
     final walletLoading =
-        Provider.of<GetWalletProvider>(context, listen: true).isLoading;
-    print("wallet Provider : ${walletProvider?.wallets?.coins}");
+        Provider.of<GetWalletProvider>(context, listen: false).isLoading;
+    // print("wallet Provider : ${walletProvider?.wallets?.counter}");
 
     final dataProvider =
         Provider.of<UserDataProvider>(context).getUserModel?.users;
     BannerModel? banners =
         Provider.of<GetBannersProvider>(context, listen: false).bannerModel;
-    print("Title of first Banner ${banners?.banners?.last.image}");
+    // print("Title of first Banner ${banners?.banners?.last.image}");
 
     final videoAdsProvider =
         Provider.of<VideoAdsProvider>(context, listen: true).videoAdsModel;
-    print("Video Ads @@@@@@@@@@ ---> ${videoAdsProvider?.videos?[0].coins}");
+    // print("Video Ads @@@@@@@@@@ ---> ${videoAdsProvider?.videos?[0].coins}");
 
     final isLoading =
         Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
+
+    if (walletProvider?.wallets?.counter != null &&
+        videoAdsProvider?.videos?.length != null) {
+      if (walletProvider?.wallets?.counter ==
+          videoAdsProvider!.videos!.length) {
+        setState(() {
+          allVideoWatched = true;
+        });
+      }
+    }
+
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -191,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  "(${counterIndex}/5)",
+                  "(${walletProvider?.wallets?.counter == null ? "0" : walletProvider?.wallets?.counter}/5)",
                   style: GoogleFonts.nunito(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -224,18 +237,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: videoAdsProvider?.videos?.length != null
                     ? GetVideo(
-                        videoModel: videoAdsProvider,
-                        onComplete: (isComplete) {
-                          Future.delayed(Duration.zero, () async {
-                            setState(() {
-                              counterIndex = isComplete;
-                              print("Is video Complete : $isComplete");
-                              Provider.of<GetWalletProvider>(context,
-                                      listen: false)
-                                  .getwallet();
-                            });
-                          });
-                        },
+                        videoLink: videoAdsProvider
+                            ?.videos?[walletProvider!.wallets!.counter!.toInt()]
+                            .video,
+                        allVideoWatched: allVideoWatched ? true : false,
+                        videoID: videoAdsProvider
+                            ?.videos?[walletProvider!.wallets!.counter!.toInt()]
+                            .id,
+                        // onComplete: (isComplete) {
+                        //   Future.delayed(Duration.zero, () async {
+                        //     setState(() {
+                        //       counterIndex = isComplete;
+                        //       print("Is video Complete : $isComplete");
+                        //       Provider.of<GetWalletProvider>(context,
+                        //               listen: false)
+                        //           .getwallet();
+                        //     });
+                        //   });
+                        // },
                       )
                     : Center(
                         child: CircularProgressIndicator(
