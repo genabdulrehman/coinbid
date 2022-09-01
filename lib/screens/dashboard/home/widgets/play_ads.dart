@@ -19,7 +19,7 @@ class GetVideo extends StatefulWidget {
     this.videoID,
   }) : super(key: key);
   final String? videoLink;
-  final bool allVideoWatched;
+  bool allVideoWatched;
   final String? videoID;
   Function(int)? onComplete;
 
@@ -34,98 +34,62 @@ class _GetVideoState extends State<GetVideo> {
   bool loading = true;
   int videoIndex = 0;
   bool isVideoStarted = true;
-  @override
+  bool isVideoFinished = true;
+
+  bool alreadyStarted = false;
+  bool alreadyCompleted = false;
+  bool isPlaying = false;
   void initState() {
-    super.initState();
-
-    if (isVideoStarted) {
-      isVideoStarted ? startVideo() : print("Video is not started");
-      isVideoStarted = false;
-    }
-  }
-
-  startVideo() {
-    bool isWatched = false;
-
-    print("Video Address is : ${widget.videoLink}");
     _controller = VideoPlayerController.network("${widget.videoLink}");
-    _controller.addListener(() {
-      if (!_controller.value.isPlaying &&
-          _controller.value.isInitialized &&
-          (_controller.value.duration == _controller.value.position)) {
-        //checking the duration and position every time
-        //Video Completed//
+    widget.allVideoWatched = false;
+    print("Video Address is : ${widget.videoLink}");
 
-        // widget.onComplete!(
-        _controller.removeListener(() {});
-
-        isWatched = true;
-      }
-
-      if (isWatched) {
-        print("@@@@@@@@@@@@@@@@@@");
-        print(widget.videoID);
-        print("video is Complete");
-        print("@@@@@@@@@@@@@@@@@@");
-
-        VideoAdsController().watchAdds(id: widget.videoID, context: context);
-
-        isWatched = false;
-      }
-    });
+    _controller.addListener(statusListener);
     _controller.setLooping(false);
-    _controller.initialize().then((_) => setState(() {
-          loading = false;
-        }));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  nextVideo() async {
-    videoIndex++;
-    print("Next Video has initliaeed");
-    _controller = await VideoPlayerController.network("${widget.videoLink}");
-
-    _controller.addListener(() {
+    _controller.initialize().then((value) {
       setState(() {
-        currentDurationInSecond = _controller.value.position.inSeconds;
-        totalLength = _controller.value.duration.inSeconds;
-        // if (videoIndex <= widget.videoModel!.videos!.length) {
-
-        // nextVideo();
-
-        // if (_controller.value.isPlaying) {
-        //   if (videoIndex + 1 <= widget.videoModel!.videos!.length - 1) {
-        //     if (currentDurationInSecond == totalLength - 1) {
-        //       // nextVideo();
-
-        //       VideoAdsController()
-        //           .watchAdds(id: widget.videoModel?.videos?[videoIndex].id);
-        //       widget.onComplete!(videoIndex);
-        //     }
-        //   } else if (videoIndex >= widget.videoModel!.videos!.length - 1) {
-        //     print("You have watched all adds");
-        //   }
-        // }
-        // _controller = VideoPlayerController.network(
-        //     "${widget.videoModel?.videos?[1].video!}");
-
-        // }
+        loading = false;
       });
     });
+  }
 
-    _controller.setLooping(false);
-    _controller.initialize().then((_) => setState(() {
-          loading = false;
-        }));
+  void statusListener() {
+    final controllerValue = _controller.value;
+    setState(() {
+      isPlaying = controllerValue.isPlaying;
+      controllerValue.buffered;
+    });
+
+    int position = controllerValue.position.inMilliseconds;
+    int duration = controllerValue.duration.inMilliseconds;
+
+    if (!alreadyStarted && isPlaying && (position == 0 || position < duration))
+      return onStarted();
+    if (!alreadyCompleted && !isPlaying && position > 0 && position >= duration)
+      return onCompleted();
+  }
+
+  void onStarted() {
+    alreadyStarted = true;
+    alreadyCompleted = false;
+    //TODO: Video just started
+  }
+
+  void onCompleted() {
+    alreadyStarted = false;
+    alreadyCompleted = true;
+
+    print("@@@@@@@@@@@@@@@@@@");
+    print(widget.videoID);
+    print("video is Complete");
+    print("@@@@@@@@@@@@@@@@@@");
+    VideoAdsController().watchAdds(id: widget.videoID, context: context);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("%%%%%% is all videos watched ? : ${widget.allVideoWatched}");
+
     return Center(
       child: _controller.value.isInitialized
           ? ClipRRect(

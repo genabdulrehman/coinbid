@@ -20,6 +20,12 @@ class VideoAdsController {
     return data;
   }
 
+  Future<void> isAdswatched(bool ads) async {
+    var box = await Hive.openBox("UserData");
+    var data = box.put("is-ads-watched", ads);
+    // token = data.toString();
+  }
+
   Future<VideoAdsModel> getVideoAdsModel({
     context,
   }) async {
@@ -31,10 +37,15 @@ class VideoAdsController {
       'user_access_token': token.toString()
     }).then((response) {
       if (response["success"] != null && response["success"] == true) {
+        isAdswatched(false);
         videoAdsModel = VideoAdsModel.fromJson(response);
         print("Transations ---> ${videoAdsModel.success}");
       } else {
         Get.snackbar("Something went wrong", response['message']);
+
+        if (response["message"] == "Today 5 ads watched") {
+          isAdswatched(true);
+        }
       }
     });
     return videoAdsModel;

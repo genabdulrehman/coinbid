@@ -25,9 +25,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? userName;
+  bool? watched;
   Future<String?> readDataFromHive() async {
     var box = await Hive.openBox("UserData");
     String? data = box.get("user-name");
+    bool? watch = box.get("is-ads-watched");
+    watched = watch;
     userName = data.toString();
 
     return data;
@@ -35,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    readDataFromHive();
     super.initState();
     Future.delayed(Duration.zero, () {
+      readDataFromHive();
       final dataProvider =
           Provider.of<UserDataProvider>(context, listen: false);
       dataProvider.getData();
@@ -49,6 +52,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int counterIndex = 0;
   bool allVideoWatched = false;
+  double? counterPercentage = 0.0;
+  double? totalAds = 0;
+  void calculate({int? totalLength, curentLength}) {
+    if (totalLength != null && curentLength != null) {
+      totalAds = totalLength.toDouble();
+      var percentage = curentLength / totalLength;
+      counterPercentage = percentage;
+    }
+  }
+
+  Future<void> isAdswatched(bool ads) async {
+    var box = await Hive.openBox("UserData");
+    var data = box.put("is-ads-watched", ads);
+    // token = data.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +85,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final videoAdsProvider =
         Provider.of<VideoAdsProvider>(context, listen: true).videoAdsModel;
-    // print("Video Ads @@@@@@@@@@ ---> ${videoAdsProvider?.videos?[0].coins}");
+    print("Video Ads @@@@@@@@@@ ---> ${videoAdsProvider?.videos}");
 
     final isLoading =
         Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
+
+    calculate(
+      totalLength: videoAdsProvider?.videos?.length,
+      curentLength: walletProvider?.wallets?.counter,
+    );
 
     if (walletProvider?.wallets?.counter != null &&
         videoAdsProvider?.videos?.length != null) {
@@ -80,8 +103,20 @@ class _HomeScreenState extends State<HomeScreen> {
           videoAdsProvider!.videos!.length) {
         setState(() {
           allVideoWatched = true;
+          isAdswatched(true);
+        });
+      } else {
+        setState(() {
+          isAdswatched(false);
         });
       }
+    }
+
+    if (watched == true) {
+      setState(() {
+        allVideoWatched = true;
+        counterPercentage = 1;
+      });
     }
 
     return Scaffold(
@@ -218,8 +253,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 8,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: const LinearProgressIndicator(
-                        value: .2,
+                      child: LinearProgressIndicator(
+                        value: counterPercentage,
                         valueColor: AlwaysStoppedAnimation<Color>(kOrangeColor),
                         backgroundColor: Color(0xffFDEEE4),
                       ),
@@ -238,11 +273,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: videoAdsProvider?.videos?.length != null
                     ? GetVideo(
                         videoLink: videoAdsProvider
-                            ?.videos?[walletProvider!.wallets!.counter!.toInt()]
+                            ?.videos?[allVideoWatched
+                                ? 0
+                                : walletProvider!.wallets!.counter!.toInt()]
                             .video,
                         allVideoWatched: allVideoWatched ? true : false,
                         videoID: videoAdsProvider
-                            ?.videos?[walletProvider!.wallets!.counter!.toInt()]
+                            ?.videos?[allVideoWatched
+                                ? 0
+                                : walletProvider!.wallets!.counter!.toInt()]
                             .id,
                         // onComplete: (isComplete) {
                         //   Future.delayed(Duration.zero, () async {
@@ -256,11 +295,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         //   });
                         // },
                       )
-                    : Center(
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.red)),
-                      )),
+                    : allVideoWatched
+                        ? completeWdiget(context)
+                        : Center(
+                            child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.red)),
+                          )),
             SizedBox(height: h * .017),
             const GoogleAdsBanner(),
           ],
@@ -268,4 +309,38 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+Widget completeWdiget(BuildContext context) {
+  return Container(
+    height: MediaQuery.of(context).size.height * .21,
+    width: MediaQuery.of(context).size.width * .85,
+    decoration: BoxDecoration(
+      color: Colors.green.withOpacity(.5),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+            child: Container(
+          height: 50,
+          width: 50,
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: Colors.green),
+          child: Icon(
+            Icons.done_all,
+            color: Colors.white,
+          ),
+        )),
+        SizedBox(
+          height: 5,
+        ),
+        Text(
+          "You've watched all",
+          style: TextStyle(color: Colors.grey),
+        ),
+      ],
+    ),
+  );
 }
