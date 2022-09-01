@@ -7,9 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-
-import '../Constant/constant.dart';
-import '../Models/bank_model.dart';
+import 'package:provider/provider.dart';
+import '../provider/subsciption_provider.dart';
 import '../widgets/error_dialogue.dart';
 
 class GetSubscriptionController {
@@ -58,8 +57,9 @@ class GetSubscriptionController {
               context)
           .then((value) {
         if (value['success'] == true) {
-           Get.back();
+          Get.back();
           Get.snackbar("Successfully", value['message']);
+          Provider.of<SubscriptionProvider>(context, listen: false).getUserActivePackage();
         } else {
           Get.back();
           errorDialogue(
