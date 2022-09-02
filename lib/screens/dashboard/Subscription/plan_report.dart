@@ -66,159 +66,172 @@ class _PlanReportState extends State<PlanReport> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: h * .03),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Active Plan - ${packageProvider.packages?[0].packages?.title ??''}",
-                          style: GoogleFonts.nunito(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black),
+            packageProvider.packages!.isNotEmpty ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Active Plan - ${packageProvider.packages?[0].packages?.title ??''}",
+                              style: GoogleFonts.nunito(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Rs.${packageProvider.packages?[0].packages?.price ??''}',
+                              style: GoogleFonts.nunito(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Rs.${packageProvider.packages?[0].packages?.price ??''}',
-                          style: GoogleFonts.nunito(
-                              fontSize: 36,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Expanded(
-                  //     flex: 3,
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         // Navigator.of(context).push(PageCreateRoute().createRoute(const PlanReport()));
-                  //       },
-                  //       child: Container(
-                  //         height: 24,
-                  //         width: 95,
-                  //         decoration: BoxDecoration(
-                  //             borderRadius: BorderRadius.circular(30),
-                  //             color: const Color(0xffECECEC)),
-                  //         child: Center(
-                  //           child: Text(
-                  //             'Change Plan',
-                  //             style: GoogleFonts.nunito(
-                  //                 fontSize: 12,
-                  //                 fontWeight: FontWeight.w500,
-                  //                 color: Colors.black),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     )),
-                ],
-              ),
-            ),
-            SizedBox(height: h * .01),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-              child: Container(
-                  height: 82,
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10, top: 5, bottom: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12.withOpacity(0.07),
-                        spreadRadius: 3,
-                        blurStyle: BlurStyle.normal,
-                        blurRadius: 20,
-                        offset:
-                            const Offset(1, 1), // changes position of shadow
                       ),
+                      // Expanded(
+                      //     flex: 3,
+                      //     child: GestureDetector(
+                      //       onTap: () {
+                      //         // Navigator.of(context).push(PageCreateRoute().createRoute(const PlanReport()));
+                      //       },
+                      //       child: Container(
+                      //         height: 24,
+                      //         width: 95,
+                      //         decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(30),
+                      //             color: const Color(0xffECECEC)),
+                      //         child: Center(
+                      //           child: Text(
+                      //             'Change Plan',
+                      //             style: GoogleFonts.nunito(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w500,
+                      //                 color: Colors.black),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     )),
                     ],
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: const Color(0xffFFF7F1),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Center(
-                          child: packageProvider.packages?[0].packages?.icon != '' ? Image(
-                            image: NetworkImage(packageProvider.packages?[0].packages?.icon ??''),
-                            width: 18,
-                          ):Image(
-                            image: AssetImage('images/platinum.png'),
-                            width: 18,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            packageProvider.packages?[0].packages?.title ??'',
-                            style: GoogleFonts.nunito(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "Currently Activated!",
-                            style: GoogleFonts.nunito(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xffC8C7C6)),
+                ),
+                SizedBox(height: h * .01),
+                Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                  child: Container(
+                      height: 82,
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10, top: 5, bottom: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12.withOpacity(0.07),
+                            spreadRadius: 3,
+                            blurStyle: BlurStyle.normal,
+                            blurRadius: 20,
+                            offset:
+                            const Offset(1, 1), // changes position of shadow
                           ),
                         ],
                       ),
-                      const Spacer(),
-                      Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: const Center(
-                          child: Icon(
-                            Icons.done,
-                            color: Colors.white,
-                            size: 14,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: const Color(0xffFFF7F1),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Center(
+                              child: packageProvider.packages?[0].packages?.icon != '' ? Image(
+                                image: NetworkImage(packageProvider.packages?[0].packages?.icon ??''),
+                                width: 18,
+                              ):Image(
+                                image: AssetImage('images/platinum.png'),
+                                width: 18,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(height: h * .03),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                packageProvider.packages?[0].packages?.title ??'',
+                                style: GoogleFonts.nunito(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Currently Activated!",
+                                style: GoogleFonts.nunito(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xffC8C7C6)),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: const Center(
+                              child: Icon(
+                                Icons.done,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+                SizedBox(height: h * .03),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    'Report List',
+                    style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                ),
+              ],
+            ):Center(
               child: Text(
-                'Report List',
+                "You don't have any active plan.",
                 style: GoogleFonts.nunito(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                     color: Colors.black),
               ),
             ),
+
             SizedBox(height: h * .02),
             const ReportBox(
               'Total Addons',

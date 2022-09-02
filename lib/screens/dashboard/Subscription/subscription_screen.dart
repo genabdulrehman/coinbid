@@ -1,3 +1,5 @@
+
+import 'package:coinbid/Controllers/payment_controller.dart';
 import 'package:coinbid/constant/colors.dart';
 import 'package:coinbid/provider/subsciption_provider.dart';
 import 'package:coinbid/screens/dashboard/Subscription/plan_report.dart';
@@ -5,12 +7,14 @@ import 'package:coinbid/screens/dashboard/Subscription/widgets/active_plan_box.d
 import 'package:coinbid/screens/dashboard/Subscription/widgets/inActive_plan_box.dart';
 import 'package:coinbid/widgets/customButton.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Controllers/getSubsciption_controller.dart';
 import '../../../Controllers/page_controller.dart';
 import '../../../Models/subscription_model.dart';
+import '../../../provider/user_provider.dart';
 import '../../../widgets/error_dialogue.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -26,63 +30,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       GetSubscriptionController();
   double selectedPrice = 0;
   String planId = '';
-  // setPlan(int index) {
-  //   setState(() {
-  //     switch (index) {
-  //       case 0:
-  //         {
-  //           for(int i=0 ; i<packages.length ;i++){
-  //             packages[i].active = false;
-  //           }
-  //           packages[index].active = true;
-  //         }
-  //         break;
-  //       case 1:
-  //         {
-  //           for(int i=0 ; i<packages.length ;i++){
-  //             packages[i].active = false;
-  //           }
-  //           packages[index].active = true;
-  //         }
-  //         break;
-  //       case 2:
-  //         {
-  //           for(int i=0 ; i<packages.length ;i++){
-  //             packages[i].active = false;
-  //           }
-  //           packages[index].active = true;
-  //         }
-  //         break;
-  //       case 3:
-  //         {
-  //           pricePlanController.pricePlan[index].active = true;
-  //           pricePlanController.pricePlan[0].active = false;
-  //           pricePlanController.pricePlan[1].active = false;
-  //           pricePlanController.pricePlan[2].active = false;
-  //         }
-  //
-  //         break;
-  //       case 4:
-  //         {
-  //           pricePlanController.pricePlan[index].active = true;
-  //           pricePlanController.pricePlan[0].active = false;
-  //           pricePlanController.pricePlan[1].active = false;
-  //           pricePlanController.pricePlan[2].active = false;
-  //           pricePlanController.pricePlan[4].active = false;
-  //         }
-  //
-  //         break;
-  //     }
-  //   });
-  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
+      Provider.of<UserDataProvider>(context, listen: false).getData();
           Provider.of<SubscriptionProvider>(context, listen: false)
               .getSubscriptions();
+      Provider.of<SubscriptionProvider>(context, listen: false).getUserActivePackage();
     });
   }
 
@@ -92,6 +49,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final subsciptionProvider =
         Provider.of<SubscriptionProvider>(context).subscriptionModel;
+    final userProvider = Provider.of<UserDataProvider>(context).getUserModel;
+    final packageProvider = Provider.of<SubscriptionProvider>(context, listen: true).activePlanModel;
     packages = subsciptionProvider.packages ?? [];
     print("Subsc --> $subsciptionProvider");
     var isLoading = Provider.of<SubscriptionProvider>(context).isLoading;
@@ -253,9 +212,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                       title: "Selected plan is required",
                                       bodyText:
                                           "Please select any plan for subscription.");
-                                } else {
-                                  getSubscriptionController.subscribePlan(
-                                      context, planId);
+                                }
+                                else if (packageProvider.packages!.isNotEmpty) {
+                                  errorDialogue(
+                                      context: context,
+                                      title: "Already buy plan",
+                                      bodyText:
+                                      "You have already buy one plan.");
+                                }
+                                else {
+                                  String orderId = DateTime.now().millisecondsSinceEpoch.toString();
+                                  PaymentController().getPaymentToken(context, orderId, selectedPrice.toString()).then((value) {
+                                    if(value.status == "OK"){
+                                      Get.back();
+                                       PaymentController().proceedPayment(context,value.cfToken!, orderId,planId, selectedPrice.toString(), userProvider!);
+                                    }
+                                    else{
+                                      Get.back();
+                                      Get.snackbar(
+                                          "Something went wrong",
+                                          value.message??'');
+                                    }
+                                  });
                                 }
                               }),
                     ),

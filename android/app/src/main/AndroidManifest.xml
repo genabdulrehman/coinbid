@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.coinbid">
+    package="com.example.coinbid"
+    xmlns:tools="http://schemas.android.com/tools">
    <application
         android:label="coinbid"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:node="merge">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -11,7 +11,7 @@ class UserReportModel {
 
   factory UserReportModel.fromJson(Map<String, dynamic> json) => UserReportModel(
     success: json["success"],
-    reports: Reports.fromJson(json["reports"]),
+    reports: Reports.fromJson(json["reports"] ??null),
   );
 
   Map<String, dynamic> toJson() => {
@@ -46,16 +46,16 @@ class Reports {
   int? v;
 
   factory Reports.fromJson(Map<String, dynamic> json) => Reports(
-    id: json["_id"],
-    users: json["users"],
-    adsWatch: json["ads_watch"],
-    coinEarned: json["coin_earned"],
-    convertedCoin: json["converted_coin"],
-    todayCoinEarned: json["today_coin_earned"],
-    convertedEarned: json["converted_earned"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    v: json["__v"],
+    id: json["_id"] ?? '',
+    users: json["users"]??'',
+    adsWatch: json["ads_watch"]??'',
+    coinEarned: json["coin_earned"]??0,
+    convertedCoin: json["converted_coin"]??0,
+    todayCoinEarned: json["today_coin_earned"]??0,
+    convertedEarned: json["converted_earned"]??0,
+    createdAt: DateTime.parse(json["created_at"]??null),
+    updatedAt: DateTime.parse(json["updated_at"]??null),
+    v: json["__v"] ??0,
   );
 
   Map<String, dynamic> toJson() => {
