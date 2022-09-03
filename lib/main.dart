@@ -22,6 +22,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,8 @@ Future<String?> readDataFromHive() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
   await Hive.initFlutter();
   await readDataFromHive();
   Firebase.initializeApp().then((value) {
@@ -53,6 +56,8 @@ void main() async {
     });
   });
 }
+
+const int maxAttempts = 3;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
