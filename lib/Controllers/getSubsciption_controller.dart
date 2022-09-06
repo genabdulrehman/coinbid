@@ -92,4 +92,20 @@ class GetSubscriptionController {
     });
     return activePlanModel;
   }
+
+  Future<void> deleteSubscriptionPlan(context) async{
+    await fetchToken();
+    deleteJson(ApiUrl().removeSubscriptionPlanUrl, {}, context,
+        headers: {'user_access_token': token.toString()}
+    ).then((value) => {
+      if(value['success'] == true){
+        print("${value['message']}")
+      }
+      else{
+        print("${value['message']}")
+      }
+    });
+}
+
+
 }

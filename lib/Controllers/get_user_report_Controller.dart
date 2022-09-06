@@ -35,4 +35,14 @@ class GetUserReportController {
     });
     return userReportModel;
   }
+
+
+  Future<void> resetDailyCoinReset(context) async{
+    await fetchToken();
+    putJson(ApiUrl().resetDailyCoins,
+        {}, context,
+        headers: {'user_access_token': token.toString()}
+    ).then((value) {
+    });
+  }
 }

@@ -70,4 +70,14 @@ class VideoAdsController {
       errorDialogue(context: context, title: "Error", bodyText: e.toString());
     }
   }
+
+  Future<void> resetCounterValue(context) async{
+    await fetchToken();
+    putJson(ApiUrl().removeCounterUrl,
+        {}, context,
+        headers: {'user_access_token': token.toString()}
+    ).then((value) {
+    });
+  }
+
 }

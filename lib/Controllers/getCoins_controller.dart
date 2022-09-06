@@ -33,4 +33,19 @@ class GetCoinsController {
     });
     return getCoinModel;
   }
+
+  Future<void> deleteCoinOrder(context) async{
+    await fetchToken();
+    deleteJson(ApiUrl().deleteCoinOrderUrl, {}, context,
+        headers: {'user_access_token': token.toString()}
+    ).then((value) => {
+      if(value['success'] == true){
+        print("${value['message']}")
+      }
+      else{
+        print("${value['message']}")
+      }
+    });
+  }
+
 }
