@@ -8,7 +8,7 @@ class ApiConfig {
       serviceSid: userController.serviceSid);
 }
 
-String mainUrl = 'https://coinbid11.herokuapp.com';
+String mainUrl = 'https://coinbid.in';
 
 class ApiUrl {
   String signupUrl = '$mainUrl/users/signup';
