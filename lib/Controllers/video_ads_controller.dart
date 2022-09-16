@@ -67,7 +67,7 @@ class VideoAdsController {
     } catch (e) {
       print("Status Code os : $e");
 
-      errorDialogue(context: context, title: "Error", bodyText: e.toString());
+      // errorDialogue(context: context, title: "Error", bodyText: e.toString());
     }
   }
 }

@@ -9,7 +9,6 @@ import 'package:coinbid/Models/getCoin_model.dart';
 import 'package:coinbid/Models/getUser_model.dart';
 import 'package:coinbid/Models/getWallet_model.dart';
 import 'package:flutter/material.dart';
-import '';
 import '../widgets/loading_widget.dart';
 
 class GetWalletProvider with ChangeNotifier {

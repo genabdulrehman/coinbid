@@ -1,3 +1,4 @@
+import 'package:coinbid/Controllers/video_ads_controller.dart';
 import 'package:coinbid/Models/banner_model.dart';
 import 'package:coinbid/provider/banner_provider.dart';
 import 'package:coinbid/provider/user_provider.dart';
@@ -247,10 +248,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   bool firstAd = false;
+
+  VideoAdsController videoAdsController = VideoAdsController();
+
   @override
   Widget build(BuildContext context) {
     final walletProvider =
         Provider.of<GetWalletProvider>(context, listen: true).getWalletModel;
+    final totalAds = Provider.of<GetWalletProvider>(context, listen: true)
+        .getWalletModel
+        ?.wallets
+        ?.total_ads;
 
     final walletLoading =
         Provider.of<GetWalletProvider>(context, listen: false).isLoading;
@@ -268,35 +276,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final isLoading =
         Provider.of<VideoAdsProvider>(context, listen: true).isLoading;
+
+    // counter = walletProvider!.wallets!.counter!.toInt();
     final w = MediaQuery.of(context).size.width.toInt();
     final h = MediaQuery.of(context).size.height;
 
     calculate(
-      totalLength: videoAdsProvider?.videos?.length,
+      totalLength: totalAds,
       curentLength: walletProvider?.wallets?.counter,
     );
-
-    if (walletProvider?.wallets?.counter != null &&
-        videoAdsProvider?.videos?.length != null) {
-      if (walletProvider?.wallets?.counter ==
-          videoAdsProvider!.videos!.length) {
-        setState(() {
-          allVideoWatched = true;
-          isAdswatched(true);
-        });
-      } else {
-        setState(() {
-          isAdswatched(false);
-        });
-      }
+    if (videoAdsProvider != null) {
+      videoAdsController.isAdswatched(false);
     }
 
-    if (watched == true) {
+    if (walletProvider?.wallets?.counter != null && totalAds != null) {
+      if (walletProvider?.wallets?.counter == totalAds ||
+          counterIndex == totalAds) {
+        setState(() {
+          counterIndex = totalAds;
+
+          // Future.delayed(Duration(microseconds: 200), () {
+          allVideoWatched = true;
+        });
+        isAdswatched(true);
+        // });
+      }
+    } else {
       setState(() {
-        allVideoWatched = true;
-        counterPercentage = 1;
+        isAdswatched(false);
       });
     }
+
+    // if (totalAds==counterIndex) {
+    //   setState(() {
+    //     allVideoWatched = true;
+    //     counterPercentage = 1;
+    //   });
+    // }
 
     return Scaffold(
       body: Container(
@@ -423,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  "(${walletProvider?.wallets?.counter == null ? "0" : walletProvider?.wallets?.counter}/5)",
+                  "(${counterIndex}/${totalAds != null ? totalAds : "0"})",
                   style: GoogleFonts.nunito(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -456,30 +472,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       border: Border.all(color: kBorderColor),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: videoAdsProvider?.videos?.length != null
+                    child: videoAdsProvider?.videos?.length != null &&
+                            totalAds != null &&
+                            walletProvider?.wallets?.counter?.toInt() != null &&
+                            counterIndex != totalAds
                         ? GetVideo(
+                            videoIndex:
+                                walletProvider?.wallets?.counter?.toInt(),
+                            totaAds: totalAds,
                             videoLink: videoAdsProvider
-                                ?.videos?[allVideoWatched
-                                    ? 0
-                                    : walletProvider!.wallets!.counter!.toInt()]
+                                ?.videos?[
+                                    walletProvider!.wallets!.counter!.toInt()]
                                 .video,
                             allVideoWatched: allVideoWatched ? true : false,
                             videoID: videoAdsProvider
-                                ?.videos?[allVideoWatched
-                                    ? 0
-                                    : walletProvider!.wallets!.counter!.toInt()]
+                                ?.videos?[
+                                    walletProvider!.wallets!.counter!.toInt()]
                                 .id,
-                            // onComplete: (isComplete) {
-                            //   Future.delayed(Duration.zero, () async {
-                            //     setState(() {
-                            //       counterIndex = isComplete;
-                            //       print("Is video Complete : $isComplete");
-                            //       Provider.of<GetWalletProvider>(context,
-                            //               listen: false)
-                            //           .getwallet();
-                            //     });
-                            //   });
-                            // },
+                            onComplete: (isComplete) {
+                              Future.delayed(Duration.zero, () async {
+                                setState(() {
+                                  counterIndex = isComplete;
+                                  print("Is video Complete : $isComplete");
+                                  // Provider.of<GetWalletProvider>(context,
+                                  //         listen: false)
+                                  //     .getwallet();
+                                });
+                              });
+                            },
                           )
                         : allVideoWatched
                             ? completeWdiget(context)

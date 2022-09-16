@@ -25,7 +25,11 @@ class _TransactionScreenState extends State<TransactionScreen>
     _controller = TabController(length: 3, vsync: this);
     Future.delayed(Duration.zero, () {
       Provider.of<TransactionsProvider>(context, listen: false)
+          .getTransationsToday();
+      Provider.of<TransactionsProvider>(context, listen: false)
           .getTransations();
+      Provider.of<TransactionsProvider>(context, listen: false)
+          .getTransationsYesterday();
     });
     super.initState();
   }
@@ -41,6 +45,12 @@ class _TransactionScreenState extends State<TransactionScreen>
     final transationsProvider =
         Provider.of<TransactionsProvider>(context, listen: true)
             .transactionModel;
+    final transationsTodayProvider =
+        Provider.of<TransactionsProvider>(context, listen: true)
+            .transactionTodayModel;
+    final transationsYesterdayProvider =
+        Provider.of<TransactionsProvider>(context, listen: true)
+            .transactionYesterdayModel;
     final isLoading =
         Provider.of<TransactionsProvider>(context, listen: true).isLoading;
     final h = MediaQuery.of(context).size.height;
@@ -109,9 +119,11 @@ class _TransactionScreenState extends State<TransactionScreen>
                 controller: _controller,
                 children: <Widget>[
                   TransactionDetail(
-                      isLoading: isLoading, transactions: transationsProvider),
+                      isLoading: isLoading,
+                      transactions: transationsTodayProvider),
                   TransactionDetail(
-                      isLoading: isLoading, transactions: transationsProvider),
+                      isLoading: isLoading,
+                      transactions: transationsYesterdayProvider),
                   TransactionDetail(
                       isLoading: isLoading, transactions: transationsProvider),
                   // TransactionDetail(

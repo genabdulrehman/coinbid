@@ -16,12 +16,17 @@ class GetVideo extends StatefulWidget {
     Key? key,
     required this.videoLink,
     required this.allVideoWatched,
+    required this.totaAds,
+    required this.onComplete,
+    required this.videoIndex,
     this.videoID,
   }) : super(key: key);
   final String? videoLink;
   bool allVideoWatched;
   final String? videoID;
   Function(int)? onComplete;
+  int? videoIndex;
+  int totaAds;
 
   @override
   _GetVideoState createState() => _GetVideoState();
@@ -31,6 +36,7 @@ class _GetVideoState extends State<GetVideo> {
   late VideoPlayerController _controller;
   int currentDurationInSecond = 0;
   int totalLength = 0;
+
   bool loading = true;
   int videoIndex = 0;
   bool isVideoStarted = true;
@@ -39,7 +45,11 @@ class _GetVideoState extends State<GetVideo> {
   bool alreadyStarted = false;
   bool alreadyCompleted = false;
   bool isPlaying = false;
+
   void initState() {
+    widget.onComplete!(widget.videoIndex!.toInt());
+    videoIndex = widget.videoIndex!;
+    totalLength = widget.totaAds;
     _controller = VideoPlayerController.network("${widget.videoLink}");
     widget.allVideoWatched = false;
     print("Video Address is : ${widget.videoLink}");
@@ -78,12 +88,24 @@ class _GetVideoState extends State<GetVideo> {
   void onCompleted() {
     alreadyStarted = false;
     alreadyCompleted = true;
+    videoIndex++;
+    widget.onComplete!(videoIndex);
 
     print("@@@@@@@@@@@@@@@@@@");
     print(widget.videoID);
     print("video is Complete");
     print("@@@@@@@@@@@@@@@@@@");
     VideoAdsController().watchAdds(id: widget.videoID, context: context);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    // Future.delayed(Duration(microseconds: 200), () {
+    _controller.dispose();
+    // });
+    super.dispose();
   }
 
   @override

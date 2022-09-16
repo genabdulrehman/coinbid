@@ -33,4 +33,46 @@ class TransactionsController {
     });
     return getTransactionsModel;
   }
+
+  Future<GetTransactionsModel> getTransationsYesterday({
+    context,
+  }) async {
+    await fetchToken();
+    GetTransactionsModel getTransactionsModel = GetTransactionsModel();
+    print("Get transation Yesterday is called");
+
+    await getJson(ApiUrl().getTransationsYesterday, headers: {
+      'Content-Type': 'application/json',
+      'user_access_token': token.toString()
+    }).then((transactions) {
+      if (transactions["success"] != null && transactions["success"] == true) {
+        getTransactionsModel = GetTransactionsModel.fromJson(transactions);
+        print("Transations ---> ${getTransactionsModel.success}");
+      } else {
+        debugPrint("message x: ${transactions['message']}");
+      }
+    });
+    return getTransactionsModel;
+  }
+
+  Future<GetTransactionsModel> getTransationsToday({
+    context,
+  }) async {
+    await fetchToken();
+    GetTransactionsModel getTransactionsModel = GetTransactionsModel();
+    print("Get transation today is called");
+
+    await getJson(ApiUrl().getTransationsToday, headers: {
+      'Content-Type': 'application/json',
+      'user_access_token': token.toString()
+    }).then((transactions) {
+      if (transactions["success"] != null && transactions["success"] == true) {
+        getTransactionsModel = GetTransactionsModel.fromJson(transactions);
+        print("Transations ---> ${getTransactionsModel.success}");
+      } else {
+        debugPrint("message x: ${transactions['message']}");
+      }
+    });
+    return getTransactionsModel;
+  }
 }
