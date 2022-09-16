@@ -322,18 +322,18 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: h * .06),
             Row(
               children: [
-                const CircleAvatar(
+                 CircleAvatar(
                   radius: 25,
-                  // backgroundImage: userController.userData.value.profile != null?NetworkImage(userController.userData.value.profile!):null,
                   backgroundColor: kLightBackgroundColor,
+                  backgroundImage: dataProvider?.profile != null ?NetworkImage(dataProvider?.profile??''):null,
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: ClipOval(
+                    child: dataProvider?.profile == null ? const  ClipOval(
                       child: Image(
                         image: AssetImage('images/profile.png'),
                         width: 20,
                       ),
-                    ),
+                    ):SizedBox(),
                   ),
                 ),
                 const SizedBox(

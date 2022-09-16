@@ -103,6 +103,38 @@ Future<dynamic> putJson(String url, Object? body, context,
       });
 }
 
+Future<dynamic> deleteJson(String url, Object? body, context,
+    {Map<String, String>? headers}) {
+  return http
+      .delete(Uri.parse(url),
+      body: jsonEncode(body), headers: {...defaultHeaders, ...?headers})
+      .timeout(const Duration(minutes: 2))
+      .then((response) {
+    if (response.statusCode <= 230 && response.statusCode >= 200) {
+      return jsonDecode(response.body);
+    }
+    switch (response.statusCode) {
+      case 400:
+        throw BadRequestException(response.body.toString());
+      case 401:
+      case 403:
+        throw UnauthorisedException(response.body.toString());
+      case 500:
+      default:
+        final error = ApiError(
+            'Error occurred while communication with server with status_code: ${response.statusCode} and url $url');
+    }
+  }, onError: (error) {
+    if (error is SocketException) {
+      String errorMessage = "No internet or api offline";
+      debugPrint("--> error: $errorMessage");
+      throw RemoteSourceNotAvailable(errorMessage);
+    }
+    debugPrint(error.runtimeType.toString());
+    throw ApiError("Unexpected error occurred");
+  });
+}
+
 Future<dynamic> putWithImageJson(String url, Map<String, String> body, context,
     Map<String, String> headers, path) async {
   var request = http.MultipartRequest('PUT', Uri.parse(url));
