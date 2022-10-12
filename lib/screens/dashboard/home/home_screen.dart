@@ -343,14 +343,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     dataProvider?.name != null
-                        ? Text(
-                            '${dataProvider?.name}',
-                            // "${userName}",
-                            style: GoogleFonts.nunito(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black),
-                          )
+                        ? SizedBox(
+                          width: w*.6,
+                          child: Text(
+                              '${dataProvider?.name}',
+                              overflow: TextOverflow.ellipsis,
+                              // "${userName}",
+                              style: GoogleFonts.nunito(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                        )
                         : Container(
                             height: 20,
                             width: 20,
